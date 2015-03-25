@@ -21,24 +21,13 @@ func NewHacker(style styling.Style) *Hacker {
 // is optional.
 func (hacker *Hacker) Load(path1, path2 string) string {
 	files1, err1 := hacker.fileAccess.readDir(path1)
+	var release *ReleaseDesc
 	result := ""
-
-	tryLoad := func(hdFileNames, cdFileNames []string) (loaded bool) {
-		release := FindRelease(hdFileNames, cdFileNames)
-
-		if release != nil {
-			result = hacker.style.Status()("Loaded release [", release.name, "]")
-			loaded = true
-		} else {
-			result = hacker.style.Error()("Could not resolve release")
-		}
-		return
-	}
 
 	if err1 != nil {
 		result = hacker.style.Error()("Can't access directories")
 	} else if len(path2) == 0 {
-		tryLoad(fileNames(files1), nil)
+		release = FindRelease(fileNames(files1), nil)
 	} else {
 		files2, err2 := hacker.fileAccess.readDir(path2)
 
@@ -46,12 +35,18 @@ func (hacker *Hacker) Load(path1, path2 string) string {
 			fileNames1 := fileNames(files1)
 			fileNames2 := fileNames(files2)
 
-			if !tryLoad(fileNames1, fileNames2) {
-				tryLoad(fileNames2, fileNames1)
+			release = FindRelease(fileNames1, fileNames2)
+			if release == nil {
+				release = FindRelease(fileNames2, fileNames1)
 			}
 		} else {
 			result = hacker.style.Error()("Can't access directories")
 		}
+	}
+	if release != nil {
+		result = hacker.style.Status()("Loaded release [", release.name, "]")
+	} else if len(result) == 0 {
+		result = hacker.style.Error()("Could not resolve release")
 	}
 
 	return result

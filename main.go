@@ -23,7 +23,7 @@ func main() {
 	scanner := bufio.NewScanner(os.Stdin)
 	quit := false
 
-	fmt.Printf("%s\n", style.Prompt()("InkyBlackness Hacker v.", Version))
+	fmt.Printf("%s\n", style.Prompt()(`InkyBlackness Hacker v.`, Version))
 	fmt.Printf("%s\n", style.Prompt()(`Type "quit" to exit`))
 	fmt.Printf("%s\n", style.Prompt()(`Remember to keep backups! ...and to salt the fries!`))
 
