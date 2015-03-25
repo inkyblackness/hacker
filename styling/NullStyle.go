@@ -20,3 +20,7 @@ func (style *nullStyle) Prompt() StyleFunc {
 func (style *nullStyle) Error() StyleFunc {
 	return style.nullFunc
 }
+
+func (style *nullStyle) Status() StyleFunc {
+	return style.nullFunc
+}

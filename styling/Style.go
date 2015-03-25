@@ -9,4 +9,6 @@ type Style interface {
 	Prompt() StyleFunc
 	// Error is for error indications.
 	Error() StyleFunc
+	// Status is for general status messages.
+	Status() StyleFunc
 }

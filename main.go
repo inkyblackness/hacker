@@ -7,22 +7,25 @@ import (
 	"strings"
 
 	"github.com/inkyblackness/hacker/cmd"
+	"github.com/inkyblackness/hacker/core"
 	"github.com/inkyblackness/hacker/styling"
 )
 
-type testTarget struct {
-}
-
-func (target *testTarget) Load(path1, path2 string) string {
-	return "hello <" + path1 + ">, <" + path2 + ">"
-}
+const (
+	// Version contains the current version number
+	Version = "0.1.0"
+)
 
 func main() {
+	style := newStandardStyle()
+	target := core.NewHacker(style)
+	eval := cmd.NewEvaluater(style, target)
 	scanner := bufio.NewScanner(os.Stdin)
 	quit := false
-	style := newStandardStyle()
-	target := &testTarget{}
-	eval := cmd.NewEvaluater(style, target)
+
+	fmt.Printf("%s\n", style.Prompt()("InkyBlackness Hacker v.", Version))
+	fmt.Printf("%s\n", style.Prompt()(`Type "quit" to exit`))
+	fmt.Printf("%s\n", style.Prompt()(`Remember to keep backups! ...and to salt the fries!`))
 
 	for !quit {
 		input := queryUserInput(style, scanner)

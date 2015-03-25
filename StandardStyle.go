@@ -9,12 +9,14 @@ import (
 type standardStyle struct {
 	prompt styling.StyleFunc
 	err    styling.StyleFunc
+	status styling.StyleFunc
 }
 
 func newStandardStyle() *standardStyle {
 	style := &standardStyle{
 		prompt: color.New(color.FgGreen).SprintFunc(),
-		err:    color.New(color.FgRed, color.Bold).SprintFunc()}
+		err:    color.New(color.FgRed, color.Bold).SprintFunc(),
+		status: color.New(color.FgCyan).SprintFunc()}
 
 	return style
 }
@@ -25,4 +27,8 @@ func (style *standardStyle) Prompt() styling.StyleFunc {
 
 func (style *standardStyle) Error() styling.StyleFunc {
 	return style.err
+}
+
+func (style *standardStyle) Status() styling.StyleFunc {
+	return style.status
 }
