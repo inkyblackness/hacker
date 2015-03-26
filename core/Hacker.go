@@ -71,7 +71,7 @@ func (hacker *Hacker) Info() string {
 	if hacker.root != nil {
 		result = hacker.root.info()
 	} else {
-		result = `No data loaded. Use the [load "path1" "path2"] command`
+		result = hacker.style.Error()(`No data loaded. Use the [load "path1" "path2"] command.`)
 	}
 
 	return result

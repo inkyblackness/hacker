@@ -113,7 +113,7 @@ func (suite *HackerSuite) TestLoadSetsUpRootNodeForSwappedPaths(c *check.C) {
 func (suite *HackerSuite) TestInfoWithoutDataReturnsHintToLoad(c *check.C) {
 	result := suite.hacker.Info()
 
-	c.Check(result, check.Equals, `No data loaded. Use the [load "path1" "path2"] command`)
+	c.Check(result, check.Equals, `No data loaded. Use the [load "path1" "path2"] command.`)
 }
 
 func (suite *HackerSuite) TestInfoAfterLoadReturnsReleaseInfo(c *check.C) {
