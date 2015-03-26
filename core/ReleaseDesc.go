@@ -9,9 +9,9 @@ type DataLocation string
 
 const (
 	// HD is the data location for often-accessed files
-	HD = DataLocation("HD")
+	HD = DataLocation("hd")
 	// CD is the data location for remaining files
-	CD = DataLocation("CD")
+	CD = DataLocation("cd")
 )
 
 // FileDesc is a description of a specific data file

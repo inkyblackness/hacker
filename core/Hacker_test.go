@@ -109,3 +109,20 @@ func (suite *HackerSuite) TestLoadSetsUpRootNodeForSwappedPaths(c *check.C) {
 	c.Check(suite.hacker.root.locations[HD].filePath, check.Equals, "dir1")
 	c.Check(suite.hacker.root.locations[CD].filePath, check.Equals, "dir2")
 }
+
+func (suite *HackerSuite) TestInfoWithoutDataReturnsHintToLoad(c *check.C) {
+	result := suite.hacker.Info()
+
+	c.Check(result, check.Equals, `No data loaded. Use the [load "path1" "path2"] command`)
+}
+
+func (suite *HackerSuite) TestInfoAfterLoadReturnsReleaseInfo(c *check.C) {
+	hdFiles, cdFiles := DataFiles(&dosCdRelease)
+	suite.testDirectories["dir1"] = testFiles(hdFiles...)
+	suite.testDirectories["dir2"] = testFiles(cdFiles...)
+	suite.hacker.Load("dir1", "dir2")
+
+	result := suite.hacker.Info()
+
+	c.Check(result, check.Equals, suite.hacker.root.info())
+}

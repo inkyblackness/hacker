@@ -66,5 +66,13 @@ func (hacker *Hacker) Load(path1, path2 string) string {
 
 // Info returns the status of the current node
 func (hacker *Hacker) Info() string {
-	return hacker.style.Error()("not implemented")
+	var result string
+
+	if hacker.root != nil {
+		result = hacker.root.info()
+	} else {
+		result = `No data loaded. Use the [load "path1" "path2"] command`
+	}
+
+	return result
 }
