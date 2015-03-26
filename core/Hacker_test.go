@@ -76,3 +76,36 @@ func (suite *HackerSuite) TestLoadOfKnownSwitchedLocationResultsInConfirmation(c
 
 	c.Check(result, check.Equals, "Loaded release [DOS CD Demo]")
 }
+
+func (suite *HackerSuite) TestLoadSetsUpRootNodeForHdOnly(c *check.C) {
+	hdFiles, _ := DataFiles(&dosHdDemo)
+	suite.testDirectories["dir1"] = testFiles(hdFiles...)
+	suite.hacker.Load("dir1", "")
+
+	c.Assert(suite.hacker.root, check.Not(check.IsNil))
+	c.Check(suite.hacker.root.locations[HD].filePath, check.Equals, "dir1")
+	_, exists := suite.hacker.root.locations[CD]
+	c.Check(exists, check.Equals, false)
+}
+
+func (suite *HackerSuite) TestLoadSetsUpRootNodeForRelease(c *check.C) {
+	hdFiles, cdFiles := DataFiles(&dosCdRelease)
+	suite.testDirectories["dir1"] = testFiles(hdFiles...)
+	suite.testDirectories["dir2"] = testFiles(cdFiles...)
+	suite.hacker.Load("dir1", "dir2")
+
+	c.Assert(suite.hacker.root, check.Not(check.IsNil))
+	c.Check(suite.hacker.root.locations[HD].filePath, check.Equals, "dir1")
+	c.Check(suite.hacker.root.locations[CD].filePath, check.Equals, "dir2")
+}
+
+func (suite *HackerSuite) TestLoadSetsUpRootNodeForSwappedPaths(c *check.C) {
+	hdFiles, cdFiles := DataFiles(&dosCdRelease)
+	suite.testDirectories["dir1"] = testFiles(hdFiles...)
+	suite.testDirectories["dir2"] = testFiles(cdFiles...)
+	suite.hacker.Load("dir2", "dir1")
+
+	c.Assert(suite.hacker.root, check.Not(check.IsNil))
+	c.Check(suite.hacker.root.locations[HD].filePath, check.Equals, "dir1")
+	c.Check(suite.hacker.root.locations[CD].filePath, check.Equals, "dir2")
+}
