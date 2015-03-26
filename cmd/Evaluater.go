@@ -20,6 +20,7 @@ func NewEvaluater(style styling.Style, target Target) *Evaluater {
 	eval := &Evaluater{style: style, commands: []commandParser{}, target: target}
 
 	eval.commands = append(eval.commands, loadCommand)
+	eval.commands = append(eval.commands, infoCommand)
 
 	return eval
 }

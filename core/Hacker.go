@@ -63,3 +63,8 @@ func (hacker *Hacker) Load(path1, path2 string) string {
 
 	return result
 }
+
+// Info returns the status of the current node
+func (hacker *Hacker) Info() string {
+	return hacker.style.Error()("not implemented")
+}

@@ -4,4 +4,6 @@ package cmd
 type Target interface {
 	// Load requests to load data files from two paths.
 	Load(path1, path2 string) string
+	// Info returns the status of the current node.
+	Info() string
 }
