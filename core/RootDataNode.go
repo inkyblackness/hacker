@@ -20,8 +20,11 @@ func newRootDataNode(release *ReleaseDesc, hdLocation, cdLocation *locationDataN
 func (node *rootDataNode) info() string {
 	info := "Release: [" + node.release.name + "]"
 	info = info + "\nAvailable data locations:"
-	for key := range node.locations {
-		info = info + " " + string(key)
+	if _, existing := node.locations[HD]; existing {
+		info = info + " hd"
+	}
+	if _, existing := node.locations[CD]; existing {
+		info = info + " cd"
 	}
 
 	return info
