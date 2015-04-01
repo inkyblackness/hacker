@@ -103,7 +103,7 @@ func (hacker *Hacker) ChangeDirectory(path string) (result string) {
 		hacker.curNode = tempNode
 		result = ""
 	} else {
-		result = hacker.style.Error()(`Directory not found: ""`, path)
+		result = hacker.style.Error()(`Directory not found: "`, path, `"`)
 	}
 	return
 }
