@@ -5,14 +5,17 @@ import (
 )
 
 type blockDataNode struct {
-	parentNode *chunkDataNode
+	parentNode DataNode
 	blockIndex uint16
+
+	data []byte
 }
 
-func newBlockDataNode(parentNode *chunkDataNode, blockIndex uint16) *blockDataNode {
+func newBlockDataNode(parentNode DataNode, blockIndex uint16, data []byte) *blockDataNode {
 	node := &blockDataNode{
 		parentNode: parentNode,
-		blockIndex: blockIndex}
+		blockIndex: blockIndex,
+		data:       data}
 
 	return node
 }
@@ -23,6 +26,18 @@ func (node *blockDataNode) Parent() DataNode {
 
 func (node *blockDataNode) Info() string {
 	info := ""
+
+	for index, value := range node.data {
+		if index == 0 {
+		} else if (index % 16) == 0 {
+			info += "\n"
+		} else if (index % 8) == 0 {
+			info += "  "
+		} else {
+			info += " "
+		}
+		info += fmt.Sprintf("%02X", value)
+	}
 
 	return info
 }

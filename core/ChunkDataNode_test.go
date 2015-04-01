@@ -8,17 +8,12 @@ import (
 )
 
 type ChunkDataNodeSuite struct {
-	parentNode  DataNode
-	chunkHolder *TestingChunkProvider
+	parentNode DataNode
 
 	chunkDataNode DataNode
 }
 
 var _ = check.Suite(&ChunkDataNodeSuite{})
-
-func (suite *ChunkDataNodeSuite) SetUpTest(c *check.C) {
-	suite.chunkHolder = NewTestingChunkProvider()
-}
 
 func (suite *ChunkDataNodeSuite) TestInfoReturnsListOfAvailableBlockCountAndContentType(c *check.C) {
 	holder := chunk.NewBlockHolder(chunk.BasicChunkType, res.Data, [][]byte{[]byte{}, []byte{}})

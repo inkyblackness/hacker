@@ -23,7 +23,7 @@ func newChunkDataNode(parentNode DataNode, chunkID res.ResourceID, holder chunk.
 		blockDataNodes: make([]*blockDataNode, holder.BlockCount())}
 
 	for i := uint16(0); i < holder.BlockCount(); i++ {
-		node.blockDataNodes[i] = newBlockDataNode(node, i)
+		node.blockDataNodes[i] = newBlockDataNode(node, i, holder.BlockData(i))
 	}
 
 	return node
