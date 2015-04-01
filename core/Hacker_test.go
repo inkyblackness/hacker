@@ -129,7 +129,7 @@ func (suite *HackerSuite) TestInfoAfterLoadReturnsReleaseInfo(c *check.C) {
 
 	result := suite.hacker.Info()
 
-	c.Check(result, check.Equals, suite.hacker.root.info())
+	c.Check(result, check.Equals, suite.hacker.root.Info())
 }
 
 func (suite *HackerSuite) TestChangeDirectoryChangesCurrentNode(c *check.C) {
@@ -137,7 +137,7 @@ func (suite *HackerSuite) TestChangeDirectoryChangesCurrentNode(c *check.C) {
 
 	suite.hacker.ChangeDirectory("hd")
 
-	c.Check(suite.hacker.Info(), check.Equals, suite.hacker.root.locations[HD].info())
+	c.Check(suite.hacker.Info(), check.Equals, suite.hacker.root.locations[HD].Info())
 }
 
 func (suite *HackerSuite) TestChangeDirectoryHandlesStartingSlash(c *check.C) {
@@ -146,7 +146,7 @@ func (suite *HackerSuite) TestChangeDirectoryHandlesStartingSlash(c *check.C) {
 
 	suite.hacker.ChangeDirectory("/cd")
 
-	c.Check(suite.hacker.Info(), check.Equals, suite.hacker.root.locations[CD].info())
+	c.Check(suite.hacker.Info(), check.Equals, suite.hacker.root.locations[CD].Info())
 }
 
 func (suite *HackerSuite) TestChangeDirectoryHandlesDotDot(c *check.C) {
@@ -155,7 +155,7 @@ func (suite *HackerSuite) TestChangeDirectoryHandlesDotDot(c *check.C) {
 
 	suite.hacker.ChangeDirectory("../cd")
 
-	c.Check(suite.hacker.Info(), check.Equals, suite.hacker.root.locations[CD].info())
+	c.Check(suite.hacker.Info(), check.Equals, suite.hacker.root.locations[CD].Info())
 }
 
 func (suite *HackerSuite) TestChangeDirectoryIgnoresTrailingSlash(c *check.C) {
@@ -163,7 +163,7 @@ func (suite *HackerSuite) TestChangeDirectoryIgnoresTrailingSlash(c *check.C) {
 
 	suite.hacker.ChangeDirectory("hd/")
 
-	c.Check(suite.hacker.Info(), check.Equals, suite.hacker.root.locations[HD].info())
+	c.Check(suite.hacker.Info(), check.Equals, suite.hacker.root.locations[HD].Info())
 }
 
 func (suite *HackerSuite) TestCurrentDirctoryReturnsCurrentPath(c *check.C) {

@@ -17,19 +17,19 @@ func (suite *RootDataNodeSuite) SetUpTest(c *check.C) {
 }
 
 func (suite *RootDataNodeSuite) TestResolveOfDotDotReturnsNil(c *check.C) {
-	result := suite.node.resolve("..")
+	result := suite.node.Resolve("..")
 
 	c.Check(result, check.IsNil)
 }
 
 func (suite *RootDataNodeSuite) TestResolveOfHdReturnsHdLocation(c *check.C) {
-	result := suite.node.resolve("hd")
+	result := suite.node.Resolve("hd")
 
 	c.Check(result, check.Equals, suite.node.locations[HD])
 }
 
 func (suite *RootDataNodeSuite) TestResolveOfUnknownEntryReturnsNil(c *check.C) {
-	result := suite.node.resolve("hw")
+	result := suite.node.Resolve("hw")
 
 	c.Check(result, check.IsNil)
 }

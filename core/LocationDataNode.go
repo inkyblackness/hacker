@@ -1,32 +1,32 @@
 package core
 
 type locationDataNode struct {
-	parentNode   dataNode
+	parentNode   DataNode
 	dataLocation DataLocation
 	filePath     string
 }
 
-func newLocationDataNode(parentNode dataNode, dataLocation DataLocation, filePath string, files []string) *locationDataNode {
+func newLocationDataNode(parentNode DataNode, dataLocation DataLocation, filePath string, files []string) *locationDataNode {
 	node := &locationDataNode{parentNode: parentNode, dataLocation: dataLocation, filePath: filePath}
 
 	return node
 }
 
-func (node *locationDataNode) parent() dataNode {
+func (node *locationDataNode) Parent() DataNode {
 	return node.parentNode
 }
 
-func (node *locationDataNode) info() string {
+func (node *locationDataNode) Info() string {
 	info := "Location: " + string(node.dataLocation) + "\n"
 	info = info + "FilePath: [" + node.filePath + "]"
 
 	return info
 }
 
-func (node *locationDataNode) id() string {
+func (node *locationDataNode) Id() string {
 	return string(node.dataLocation)
 }
 
-func (node *locationDataNode) resolve(path string) dataNode {
+func (node *locationDataNode) Resolve(path string) DataNode {
 	return nil
 }

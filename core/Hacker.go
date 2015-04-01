@@ -12,7 +12,7 @@ type Hacker struct {
 	fileAccess *fileAccess
 
 	root    *rootDataNode
-	curNode dataNode
+	curNode DataNode
 }
 
 // NewHacker returns a hacker instance to work with.
@@ -75,7 +75,7 @@ func (hacker *Hacker) Info() string {
 	var result string
 
 	if hacker.curNode != nil {
-		result = hacker.curNode.info()
+		result = hacker.curNode.Info()
 	} else {
 		result = hacker.style.Error()(`No data loaded. Use the [load "path1" "path2"] command.`)
 	}
@@ -89,8 +89,8 @@ func (hacker *Hacker) CurrentDirectory() string {
 	path := ""
 
 	for tempNode != nil && tempNode != hacker.root {
-		path = "/" + tempNode.id() + path
-		tempNode = tempNode.parent()
+		path = "/" + tempNode.Id() + path
+		tempNode = tempNode.Parent()
 	}
 
 	return path
@@ -107,9 +107,9 @@ func (hacker *Hacker) ChangeDirectory(path string) (result string) {
 	for _, part := range parts {
 		if tempNode != nil && part != "" {
 			if part == ".." {
-				tempNode = tempNode.parent()
+				tempNode = tempNode.Parent()
 			} else {
-				tempNode = tempNode.resolve(part)
+				tempNode = tempNode.Resolve(part)
 			}
 		}
 	}

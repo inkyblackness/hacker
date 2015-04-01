@@ -1,11 +1,14 @@
 package core
 
-type dataNode interface {
-	parent() dataNode
-
-	info() string
-
-	id() string
-
-	resolve(string) dataNode
+// DataNode represents a container with data.
+type DataNode interface {
+	// Parent returns the parent node or nil if none known.
+	Parent() DataNode
+	// Info returns human readable information about this node.
+	Info() string
+	// Id returns the identification for this node. The returned value must be
+	// the same by which the parent resolves this node.
+	Id() string
+	// Resolve returns a DataNode this node knows for the given ID.
+	Resolve(string) DataNode
 }

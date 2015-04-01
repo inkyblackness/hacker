@@ -17,11 +17,11 @@ func (node *rootDataNode) addLocation(location *locationDataNode) {
 	node.locations[location.dataLocation] = location
 }
 
-func (node *rootDataNode) parent() dataNode {
+func (node *rootDataNode) Parent() DataNode {
 	return nil
 }
 
-func (node *rootDataNode) info() string {
+func (node *rootDataNode) Info() string {
 	info := "Release: [" + node.release.name + "]"
 	info = info + "\nAvailable data locations:"
 	if _, existing := node.locations[HD]; existing {
@@ -34,11 +34,11 @@ func (node *rootDataNode) info() string {
 	return info
 }
 
-func (node *rootDataNode) id() string {
+func (node *rootDataNode) Id() string {
 	return ""
 }
 
-func (node *rootDataNode) resolve(path string) (resolved dataNode) {
+func (node *rootDataNode) Resolve(path string) (resolved DataNode) {
 	location, existing := node.locations[DataLocation(path)]
 
 	if existing {
