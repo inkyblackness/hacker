@@ -83,6 +83,7 @@ func (hacker *Hacker) Info() string {
 	return result
 }
 
+// CurrentDirectory returns the absolute path to the current directory in string form
 func (hacker *Hacker) CurrentDirectory() string {
 	tempNode := hacker.curNode
 	path := ""
@@ -95,6 +96,7 @@ func (hacker *Hacker) CurrentDirectory() string {
 	return path
 }
 
+// ChangeDirectory changes the currently active node
 func (hacker *Hacker) ChangeDirectory(path string) (result string) {
 	parts := strings.Split(path, "/")
 	tempNode := hacker.curNode
