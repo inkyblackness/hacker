@@ -6,6 +6,8 @@ import (
 	"strings"
 
 	chunkDos "github.com/inkyblackness/res/chunk/dos"
+	"github.com/inkyblackness/res/objprop"
+	objDos "github.com/inkyblackness/res/objprop/dos"
 	textDos "github.com/inkyblackness/res/textprop/dos"
 )
 
@@ -29,6 +31,12 @@ func (provider *fileBasedFileDataNodeProvider) Provide(parentNode DataNode, file
 		reader := bytes.NewReader(rawData)
 
 		if lowercaseFileName == "objprop.dat" {
+			classes := objprop.StandardProperties()
+			objProvider, objErr := objDos.NewProvider(reader, classes)
+
+			if objErr == nil {
+				node = NewObjectPropertiesDataNode(parentNode, fileName, objProvider, classes)
+			}
 		} else if lowercaseFileName == "textprop.dat" {
 			propProvider, propErr := textDos.NewProvider(reader)
 
