@@ -6,8 +6,10 @@ import (
 )
 
 type fileAccess struct {
-	readDir func(dirname string) ([]os.FileInfo, error)
+	readDir  func(dirname string) ([]os.FileInfo, error)
+	readFile func(filename string) ([]byte, error)
 }
 
 var realFileAccess = fileAccess{
-	readDir: ioutil.ReadDir}
+	readDir:  ioutil.ReadDir,
+	readFile: ioutil.ReadFile}

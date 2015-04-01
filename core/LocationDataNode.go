@@ -29,7 +29,11 @@ func (node *locationDataNode) Parent() DataNode {
 
 func (node *locationDataNode) Info() string {
 	info := "Location: " + string(node.dataLocation) + "\n"
-	info = info + "FilePath: [" + node.filePath + "]"
+	info = info + "FilePath: [" + node.filePath + "]\n"
+	info = info + "Files:"
+	for _, fileName := range node.fileNames {
+		info = info + " " + fileName
+	}
 
 	return info
 }
