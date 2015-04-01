@@ -21,6 +21,7 @@ func NewEvaluater(style styling.Style, target Target) *Evaluater {
 
 	eval.commands = append(eval.commands, loadCommand)
 	eval.commands = append(eval.commands, infoCommand)
+	eval.commands = append(eval.commands, changeDirectoryCommand)
 
 	return eval
 }

@@ -5,6 +5,7 @@ import "fmt"
 type testTarget struct {
 	loadParam [][]interface{}
 	infoParam [][]interface{}
+	cdParam   [][]interface{}
 }
 
 func (target *testTarget) Load(path1, path2 string) string {
@@ -17,4 +18,10 @@ func (target *testTarget) Info() string {
 	target.infoParam = append(target.infoParam, []interface{}{})
 
 	return fmt.Sprintf(`Info()`)
+}
+
+func (target *testTarget) ChangeDirectory(path string) string {
+	target.cdParam = append(target.cdParam, []interface{}{path})
+
+	return fmt.Sprintf(`Cd(%s)`, path)
 }

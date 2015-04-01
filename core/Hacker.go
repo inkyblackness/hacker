@@ -83,7 +83,7 @@ func (hacker *Hacker) Info() string {
 	return result
 }
 
-func (hacker *Hacker) ChangeDirectory(path string) {
+func (hacker *Hacker) ChangeDirectory(path string) (result string) {
 	parts := strings.Split(path, "/")
 	tempNode := hacker.curNode
 
@@ -101,5 +101,9 @@ func (hacker *Hacker) ChangeDirectory(path string) {
 	}
 	if tempNode != nil {
 		hacker.curNode = tempNode
+		result = ""
+	} else {
+		result = hacker.style.Error()(`Directory not found: ""`, path)
 	}
+	return
 }
