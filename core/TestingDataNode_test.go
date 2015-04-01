@@ -1,10 +1,11 @@
 package core
 
 type TestingDataNode struct {
-	id string
+	id   string
+	data []byte
 }
 
-func NewTestingDataNode(id string) DataNode {
+func NewTestingDataNode(id string) *TestingDataNode {
 	node := &TestingDataNode{id: id}
 
 	return node
@@ -32,5 +33,5 @@ func (node *TestingDataNode) Resolve(string) DataNode {
 }
 
 func (node *TestingDataNode) Data() []byte {
-	return nil
+	return node.data
 }

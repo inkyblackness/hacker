@@ -1,6 +1,7 @@
 package core
 
 import (
+	"fmt"
 	"strings"
 
 	"github.com/inkyblackness/hacker/styling"
@@ -123,6 +124,46 @@ func (hacker *Hacker) ChangeDirectory(path string) (result string) {
 		result = ""
 	} else {
 		result = hacker.style.Error()(`Directory not found: "`, path, `"`)
+	}
+	return
+}
+
+func (hacker *Hacker) Dump() (result string) {
+	rightPad := func(input string, length int) string {
+		padded := fmt.Sprintf(fmt.Sprintf("%%s%%%ds", length), input, "")
+		return padded[0:length]
+	}
+
+	if hacker.curNode != nil {
+		data := hacker.curNode.Data()
+		hexDump := ""
+		asciiDump := ""
+
+		addLine := func(offset int) {
+			result = result + fmt.Sprintf("%04X %s  %s\n", offset, rightPad(hexDump, 49), rightPad(asciiDump, 17))
+			hexDump = ""
+			asciiDump = ""
+		}
+
+		for index, value := range data {
+			if index == 0 {
+			} else if (index % 16) == 0 {
+				addLine(((index / 16) - 1) * 16)
+			} else if (index % 8) == 0 {
+				hexDump += " "
+				asciiDump += " "
+			}
+
+			hexDump += fmt.Sprintf(" %02X", value)
+			if value >= 0x20 && value < 0x80 {
+				asciiDump += string(value)
+			} else {
+				asciiDump += "."
+			}
+		}
+		if hexDump != "" {
+			addLine((len(data) / 16) * 16)
+		}
 	}
 	return
 }
