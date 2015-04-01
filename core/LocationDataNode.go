@@ -4,10 +4,17 @@ type locationDataNode struct {
 	parentNode   DataNode
 	dataLocation DataLocation
 	filePath     string
+
+	fileDataNodeProvider FileDataNodeProvider
 }
 
-func newLocationDataNode(parentNode DataNode, dataLocation DataLocation, filePath string, files []string) *locationDataNode {
-	node := &locationDataNode{parentNode: parentNode, dataLocation: dataLocation, filePath: filePath}
+func newLocationDataNode(parentNode DataNode, dataLocation DataLocation,
+	filePath string, files []string, fileDataNodeProvider FileDataNodeProvider) *locationDataNode {
+	node := &locationDataNode{
+		parentNode:           parentNode,
+		dataLocation:         dataLocation,
+		filePath:             filePath,
+		fileDataNodeProvider: fileDataNodeProvider}
 
 	return node
 }

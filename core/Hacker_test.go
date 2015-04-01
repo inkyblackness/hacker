@@ -21,7 +21,7 @@ func (suite *HackerSuite) SetUpTest(c *check.C) {
 	suite.testDirectories = make(map[string][]os.FileInfo)
 
 	suite.hacker = NewHacker(styling.NullStyle())
-	suite.hacker.fileAccess = &fileAccess{
+	suite.hacker.fileAccess = fileAccess{
 		readDir: func(path string) (info []os.FileInfo, err error) {
 			var ok bool
 			info, ok = suite.testDirectories[path]

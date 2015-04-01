@@ -12,8 +12,8 @@ var _ = check.Suite(&RootDataNodeSuite{})
 
 func (suite *RootDataNodeSuite) SetUpTest(c *check.C) {
 	suite.node = newRootDataNode(&dosCdRelease)
-	suite.node.addLocation(newLocationDataNode(suite.node, HD, "/hdPath/", []string{"file1", "file2"}))
-	suite.node.addLocation(newLocationDataNode(suite.node, CD, "/cdPath/", []string{"fileA", "fileB"}))
+	suite.node.addLocation(newLocationDataNode(suite.node, HD, "/hdPath/", []string{"file1", "file2"}, nil))
+	suite.node.addLocation(newLocationDataNode(suite.node, CD, "/cdPath/", []string{"fileA", "fileB"}, nil))
 }
 
 func (suite *RootDataNodeSuite) TestResolveOfDotDotReturnsNil(c *check.C) {
