@@ -9,12 +9,20 @@ type blockDataNode struct {
 	blockIndex uint16
 }
 
+func newBlockDataNode(parentNode *chunkDataNode, blockIndex uint16) *blockDataNode {
+	node := &blockDataNode{
+		parentNode: parentNode,
+		blockIndex: blockIndex}
+
+	return node
+}
+
 func (node *blockDataNode) Parent() DataNode {
 	return node.parentNode
 }
 
 func (node *blockDataNode) Info() string {
-	info := "Chunk: " + node.ID()
+	info := ""
 
 	return info
 }

@@ -18,7 +18,7 @@ func NewResourceDataNode(parentNode DataNode, name string, provider chunk.Provid
 		name:           name,
 		chunkDataNodes: make([]*chunkDataNode, len(ids))}
 	for index, id := range ids {
-		node.chunkDataNodes[index] = newChunkDataNode(node, id)
+		node.chunkDataNodes[index] = newChunkDataNode(node, id, provider.Provide(id))
 	}
 
 	return node
