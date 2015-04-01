@@ -6,9 +6,9 @@ type DataNode interface {
 	Parent() DataNode
 	// Info returns human readable information about this node.
 	Info() string
-	// Id returns the identification for this node. The returned value must be
+	// ID returns the identification for this node. The returned value must be
 	// the same by which the parent resolves this node.
-	Id() string
+	ID() string
 	// Resolve returns a DataNode this node knows for the given ID.
 	Resolve(string) DataNode
 }

@@ -14,12 +14,12 @@ func (node *blockDataNode) Parent() DataNode {
 }
 
 func (node *blockDataNode) Info() string {
-	info := "Chunk: " + node.Id()
+	info := "Chunk: " + node.ID()
 
 	return info
 }
 
-func (node *blockDataNode) Id() string {
+func (node *blockDataNode) ID() string {
 	return fmt.Sprintf("%d", node.blockIndex)
 }
 

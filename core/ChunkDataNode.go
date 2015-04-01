@@ -24,12 +24,12 @@ func (node *chunkDataNode) Parent() DataNode {
 }
 
 func (node *chunkDataNode) Info() string {
-	info := "Chunk: " + node.Id()
+	info := "Chunk: " + node.ID()
 
 	return info
 }
 
-func (node *chunkDataNode) Id() string {
+func (node *chunkDataNode) ID() string {
 	return fmt.Sprintf("%04X", node.chunkID)
 }
 

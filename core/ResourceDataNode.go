@@ -32,13 +32,13 @@ func (node *resourceDataNode) Info() string {
 	info := "ResourceFile: " + node.name + "\n"
 	info += "IDs:"
 	for _, node := range node.chunkDataNodes {
-		info += " " + node.Id()
+		info += " " + node.ID()
 	}
 
 	return info
 }
 
-func (node *resourceDataNode) Id() string {
+func (node *resourceDataNode) ID() string {
 	return node.name
 }
 

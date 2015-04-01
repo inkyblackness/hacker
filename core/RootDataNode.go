@@ -34,7 +34,7 @@ func (node *rootDataNode) Info() string {
 	return info
 }
 
-func (node *rootDataNode) Id() string {
+func (node *rootDataNode) ID() string {
 	return ""
 }
 

@@ -89,7 +89,7 @@ func (hacker *Hacker) CurrentDirectory() string {
 	path := ""
 
 	for tempNode != nil && tempNode != hacker.root {
-		path = "/" + tempNode.Id() + path
+		path = "/" + tempNode.ID() + path
 		tempNode = tempNode.Parent()
 	}
 

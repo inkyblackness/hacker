@@ -23,7 +23,7 @@ func (node *locationDataNode) Info() string {
 	return info
 }
 
-func (node *locationDataNode) Id() string {
+func (node *locationDataNode) ID() string {
 	return string(node.dataLocation)
 }
 
