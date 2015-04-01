@@ -5,7 +5,8 @@ import (
 	"path/filepath"
 	"strings"
 
-	"github.com/inkyblackness/res/chunk/dos"
+	chunkDos "github.com/inkyblackness/res/chunk/dos"
+	textDos "github.com/inkyblackness/res/textprop/dos"
 )
 
 type fileBasedFileDataNodeProvider struct {
@@ -25,12 +26,17 @@ func (provider *fileBasedFileDataNodeProvider) Provide(parentNode DataNode, file
 
 	if err == nil {
 		lowercaseFileName := strings.ToLower(fileName)
+		reader := bytes.NewReader(rawData)
 
 		if lowercaseFileName == "objprop.dat" {
 		} else if lowercaseFileName == "textprop.dat" {
+			propProvider, propErr := textDos.NewProvider(reader)
+
+			if propErr == nil {
+				node = NewTexturePropertiesDataNode(parentNode, fileName, propProvider)
+			}
 		} else {
-			reader := bytes.NewReader(rawData)
-			chunkProvider, chunkErr := dos.NewChunkProvider(reader)
+			chunkProvider, chunkErr := chunkDos.NewChunkProvider(reader)
 
 			if chunkErr == nil {
 				node = NewResourceDataNode(parentNode, fileName, chunkProvider)

@@ -8,7 +8,6 @@ type resourceDataNode struct {
 	parentNode DataNode
 	name       string
 
-	provider       chunk.Provider
 	chunkDataNodes []*chunkDataNode
 }
 
