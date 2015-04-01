@@ -165,3 +165,11 @@ func (suite *HackerSuite) TestChangeDirectoryIgnoresTrailingSlash(c *check.C) {
 
 	c.Check(suite.hacker.Info(), check.Equals, suite.hacker.root.locations[HD].info())
 }
+
+func (suite *HackerSuite) TestCurrentDirctoryReturnsCurrentPath(c *check.C) {
+	suite.givenAStandardSetup()
+
+	suite.hacker.ChangeDirectory("hd")
+
+	c.Check(suite.hacker.CurrentDirectory(), check.Equals, "/hd")
+}

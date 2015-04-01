@@ -28,7 +28,7 @@ func main() {
 	fmt.Printf("%s\n", style.Prompt()(`Remember to keep backups! ...and to salt the fries!`))
 
 	for !quit {
-		input := queryUserInput(style, scanner)
+		input := queryUserInput(target.CurrentDirectory(), style, scanner)
 
 		if input != "" {
 			if input == "quit" {
@@ -41,8 +41,8 @@ func main() {
 	}
 }
 
-func queryUserInput(style styling.Style, scanner *bufio.Scanner) string {
-	fmt.Printf(style.Prompt()("> "))
+func queryUserInput(prompt string, style styling.Style, scanner *bufio.Scanner) string {
+	fmt.Printf(style.Prompt()(prompt, "> "))
 	scanner.Scan()
 
 	return strings.Trim(scanner.Text(), " ")

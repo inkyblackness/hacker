@@ -5,5 +5,7 @@ type dataNode interface {
 
 	info() string
 
+	id() string
+
 	resolve(string) dataNode
 }

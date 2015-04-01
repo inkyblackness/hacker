@@ -83,6 +83,18 @@ func (hacker *Hacker) Info() string {
 	return result
 }
 
+func (hacker *Hacker) CurrentDirectory() string {
+	tempNode := hacker.curNode
+	path := ""
+
+	for tempNode != nil && tempNode != hacker.root {
+		path = "/" + tempNode.id() + path
+		tempNode = tempNode.parent()
+	}
+
+	return path
+}
+
 func (hacker *Hacker) ChangeDirectory(path string) (result string) {
 	parts := strings.Split(path, "/")
 	tempNode := hacker.curNode

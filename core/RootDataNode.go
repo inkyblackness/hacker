@@ -34,6 +34,15 @@ func (node *rootDataNode) info() string {
 	return info
 }
 
-func (node *rootDataNode) resolve(path string) dataNode {
-	return node.locations[DataLocation(path)]
+func (node *rootDataNode) id() string {
+	return ""
+}
+
+func (node *rootDataNode) resolve(path string) (resolved dataNode) {
+	location, existing := node.locations[DataLocation(path)]
+
+	if existing {
+		resolved = location
+	}
+	return
 }

@@ -23,6 +23,10 @@ func (node *locationDataNode) info() string {
 	return info
 }
 
+func (node *locationDataNode) id() string {
+	return string(node.dataLocation)
+}
+
 func (node *locationDataNode) resolve(path string) dataNode {
 	return nil
 }
