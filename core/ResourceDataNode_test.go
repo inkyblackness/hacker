@@ -28,3 +28,14 @@ func (suite *ResourceDataNodeSuite) TestInfoReturnsListOfAvailableChunkIDs(c *ch
 
 	c.Check(result, check.Equals, "ResourceFile: testFile.res\nIDs: 0100 0050")
 }
+
+func (suite *ResourceDataNodeSuite) TestResolveReturnsDataNodeForKnownID(c *check.C) {
+	suite.chunkHolder.Consume(res.ResourceID(0x0100), chunk.NewBlockHolder(chunk.BasicChunkType, res.Data, [][]byte{}))
+	suite.chunkHolder.Consume(res.ResourceID(0x0050), chunk.NewBlockHolder(chunk.BasicChunkType, res.Data, [][]byte{}))
+	suite.node = NewResourceDataNode(suite.parentNode, "testFile.res", suite.chunkHolder)
+
+	result := suite.node.Resolve("0050")
+
+	c.Assert(result, check.NotNil)
+	c.Check(result.ID(), check.Equals, "0050")
+}

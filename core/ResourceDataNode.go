@@ -42,6 +42,12 @@ func (node *resourceDataNode) ID() string {
 	return node.name
 }
 
-func (node *resourceDataNode) Resolve(path string) DataNode {
-	return nil
+func (node *resourceDataNode) Resolve(path string) (resolved DataNode) {
+	for _, temp := range node.chunkDataNodes {
+		if temp.ID() == path {
+			resolved = temp
+		}
+	}
+
+	return
 }
