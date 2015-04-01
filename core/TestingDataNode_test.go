@@ -30,3 +30,7 @@ func (node *TestingDataNode) ID() string {
 func (node *TestingDataNode) Resolve(string) DataNode {
 	return nil
 }
+
+func (node *TestingDataNode) Data() []byte {
+	return nil
+}

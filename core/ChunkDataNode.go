@@ -52,3 +52,7 @@ func (node *chunkDataNode) Resolve(path string) (resolved DataNode) {
 
 	return
 }
+
+func (node *chunkDataNode) Data() []byte {
+	return nil
+}

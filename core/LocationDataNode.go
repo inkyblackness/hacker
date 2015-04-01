@@ -65,3 +65,7 @@ func (node *locationDataNode) isFileKnown(fileName string) (result bool) {
 	}
 	return
 }
+
+func (node *locationDataNode) Data() []byte {
+	return nil
+}

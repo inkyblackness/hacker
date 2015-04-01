@@ -11,4 +11,6 @@ type DataNode interface {
 	ID() string
 	// Resolve returns a DataNode this node knows for the given ID.
 	Resolve(string) DataNode
+	// Data returns the data of the given node or nil if no data available.
+	Data() []byte
 }

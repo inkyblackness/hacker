@@ -51,3 +51,7 @@ func (node *resourceDataNode) Resolve(path string) (resolved DataNode) {
 
 	return
 }
+
+func (node *resourceDataNode) Data() []byte {
+	return nil
+}

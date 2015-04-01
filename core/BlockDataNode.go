@@ -49,3 +49,7 @@ func (node *blockDataNode) ID() string {
 func (node *blockDataNode) Resolve(path string) DataNode {
 	return nil
 }
+
+func (node *blockDataNode) Data() []byte {
+	return node.data
+}
