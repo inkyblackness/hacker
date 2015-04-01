@@ -5,16 +5,20 @@ type rootDataNode struct {
 	locations map[DataLocation]*locationDataNode
 }
 
-func newRootDataNode(release *ReleaseDesc, hdLocation, cdLocation *locationDataNode) *rootDataNode {
+func newRootDataNode(release *ReleaseDesc) *rootDataNode {
 	node := &rootDataNode{
 		release:   release,
-		locations: map[DataLocation]*locationDataNode{HD: hdLocation}}
-
-	if cdLocation != nil {
-		node.locations[CD] = cdLocation
-	}
+		locations: make(map[DataLocation]*locationDataNode)}
 
 	return node
+}
+
+func (node *rootDataNode) addLocation(location *locationDataNode) {
+	node.locations[location.dataLocation] = location
+}
+
+func (node *rootDataNode) parent() dataNode {
+	return nil
 }
 
 func (node *rootDataNode) info() string {
@@ -28,4 +32,8 @@ func (node *rootDataNode) info() string {
 	}
 
 	return info
+}
+
+func (node *rootDataNode) resolve(path string) dataNode {
+	return node.locations[DataLocation(path)]
 }

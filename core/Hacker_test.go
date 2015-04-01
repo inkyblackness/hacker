@@ -116,13 +116,52 @@ func (suite *HackerSuite) TestInfoWithoutDataReturnsHintToLoad(c *check.C) {
 	c.Check(result, check.Equals, `No data loaded. Use the [load "path1" "path2"] command.`)
 }
 
-func (suite *HackerSuite) TestInfoAfterLoadReturnsReleaseInfo(c *check.C) {
+func (suite *HackerSuite) givenAStandardSetup() {
 	hdFiles, cdFiles := DataFiles(&dosCdRelease)
 	suite.testDirectories["dir1"] = testFiles(hdFiles...)
 	suite.testDirectories["dir2"] = testFiles(cdFiles...)
 	suite.hacker.Load("dir1", "dir2")
 
+}
+
+func (suite *HackerSuite) TestInfoAfterLoadReturnsReleaseInfo(c *check.C) {
+	suite.givenAStandardSetup()
+
 	result := suite.hacker.Info()
 
 	c.Check(result, check.Equals, suite.hacker.root.info())
+}
+
+func (suite *HackerSuite) TestChangeDirectoryChangesCurrentNode(c *check.C) {
+	suite.givenAStandardSetup()
+
+	suite.hacker.ChangeDirectory("hd")
+
+	c.Check(suite.hacker.Info(), check.Equals, suite.hacker.root.locations[HD].info())
+}
+
+func (suite *HackerSuite) TestChangeDirectoryHandlesStartingSlash(c *check.C) {
+	suite.givenAStandardSetup()
+	suite.hacker.ChangeDirectory("hd")
+
+	suite.hacker.ChangeDirectory("/cd")
+
+	c.Check(suite.hacker.Info(), check.Equals, suite.hacker.root.locations[CD].info())
+}
+
+func (suite *HackerSuite) TestChangeDirectoryHandlesDotDot(c *check.C) {
+	suite.givenAStandardSetup()
+	suite.hacker.ChangeDirectory("hd")
+
+	suite.hacker.ChangeDirectory("../cd")
+
+	c.Check(suite.hacker.Info(), check.Equals, suite.hacker.root.locations[CD].info())
+}
+
+func (suite *HackerSuite) TestChangeDirectoryIgnoresTrailingSlash(c *check.C) {
+	suite.givenAStandardSetup()
+
+	suite.hacker.ChangeDirectory("hd/")
+
+	c.Check(suite.hacker.Info(), check.Equals, suite.hacker.root.locations[HD].info())
 }
