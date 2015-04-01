@@ -6,6 +6,7 @@ type testTarget struct {
 	loadParam [][]interface{}
 	infoParam [][]interface{}
 	cdParam   [][]interface{}
+	dumpParam [][]interface{}
 }
 
 func (target *testTarget) Load(path1, path2 string) string {
@@ -24,4 +25,10 @@ func (target *testTarget) ChangeDirectory(path string) string {
 	target.cdParam = append(target.cdParam, []interface{}{path})
 
 	return fmt.Sprintf(`Cd(%s)`, path)
+}
+
+func (target *testTarget) Dump() string {
+	target.dumpParam = append(target.dumpParam, []interface{}{})
+
+	return fmt.Sprintf(`Dump()`)
 }

@@ -8,4 +8,6 @@ type Target interface {
 	Info() string
 	// ChangeDirectory switches the currently active node
 	ChangeDirectory(path string) string
+	// Dump returns a data dump of the current node
+	Dump() string
 }
