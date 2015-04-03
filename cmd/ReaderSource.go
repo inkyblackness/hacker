@@ -11,7 +11,7 @@ type readerSource struct {
 
 // NewReaderSource returns a source wrapping an IO reader.
 func NewReaderSource(in io.Reader) Source {
-	source := &ReaderSource{in: bufio.NewScanner(in)}
+	source := &readerSource{in: bufio.NewScanner(in)}
 
 	return source
 }
