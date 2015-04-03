@@ -11,4 +11,8 @@ type Style interface {
 	Error() StyleFunc
 	// Status is for general status messages.
 	Status() StyleFunc
+	// Added is for added/modified data.
+	Added() StyleFunc
+	// Removed is for lost/removed data.
+	Removed() StyleFunc
 }

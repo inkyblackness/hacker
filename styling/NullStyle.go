@@ -24,3 +24,11 @@ func (style *nullStyle) Error() StyleFunc {
 func (style *nullStyle) Status() StyleFunc {
 	return style.nullFunc
 }
+
+func (style *nullStyle) Added() StyleFunc {
+	return style.nullFunc
+}
+
+func (style *nullStyle) Removed() StyleFunc {
+	return style.nullFunc
+}
