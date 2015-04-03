@@ -70,7 +70,7 @@ func runCommands(source cmd.Source, eval *cmd.Evaluater) {
 
 		if finished || input == "quit" {
 			quit = true
-		} else {
+		} else if input != "" {
 			result := eval.Evaluate(input)
 			fmt.Println(result)
 		}
