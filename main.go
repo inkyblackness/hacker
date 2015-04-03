@@ -1,49 +1,78 @@
 package main
 
 import (
-	"bufio"
 	"fmt"
 	"os"
-	"strings"
+
+	docopt "github.com/docopt/docopt-go"
 
 	"github.com/inkyblackness/hacker/cmd"
 	"github.com/inkyblackness/hacker/core"
-	"github.com/inkyblackness/hacker/styling"
 )
 
 const (
 	// Version contains the current version number
 	Version = "0.1.0"
+	// Name is the name of the application
+	Name = "InkyBlackness Hacker"
+	// Title contains a combined string of name and version
+	Title = Name + " v." + Version
 )
 
 func main() {
+	arguments, _ := docopt.Parse(usage(), nil, true, Title, false)
+
+	sourceFiles := arguments["--run"].([]string)
+	fileSources := make([]cmd.Source, len(sourceFiles))
+	for index, sourceFile := range sourceFiles {
+		file, _ := os.Open(sourceFile)
+		fileSources[index] = cmd.NewReaderSource(file)
+	}
+
 	style := newStandardStyle()
 	target := core.NewHacker(style)
 	eval := cmd.NewEvaluater(style, target)
-	scanner := bufio.NewScanner(os.Stdin)
-	quit := false
 
-	fmt.Printf("%s\n", style.Prompt()(`InkyBlackness Hacker v.`, Version))
-	fmt.Printf("%s\n", style.Prompt()(`Type "quit" to exit`))
-	fmt.Printf("%s\n", style.Prompt()(`Remember to keep backups! ...and to salt the fries!`))
-
-	for !quit {
-		input := queryUserInput(target.CurrentDirectory(), style, scanner)
-
-		if input != "" {
-			if input == "quit" {
-				quit = true
-			} else {
-				result := eval.Evaluate(input)
-				fmt.Printf("%s\n", result)
-			}
-		}
+	prompter := func() {
+		fmt.Printf(style.Prompt()(target.CurrentDirectory(), "> "))
 	}
+
+	source := cmd.NewCleaningSource(cmd.NewCombinedSource(
+		cmd.NewCombinedSource(fileSources...),
+		NewPromptSource(cmd.NewReaderSource(os.Stdin), prompter)))
+
+	fmt.Println(style.Prompt()(Title))
+	fmt.Println(style.Prompt()(`Type "quit" to exit`))
+	fmt.Println(style.Prompt()(`Remember to keep backups! ...and to salt the fries!`))
+
+	runCommands(source, eval)
 }
 
-func queryUserInput(prompt string, style styling.Style, scanner *bufio.Scanner) string {
-	fmt.Printf(style.Prompt()(prompt, "> "))
-	scanner.Scan()
+func usage() string {
+	return Title + `
 
-	return strings.Trim(scanner.Text(), " ")
+Usage:
+  hacker [--run <file>...]
+  hacker -h | --help
+  hacker --version
+
+Options:
+  -h --help     Show this screen.
+  --version     Show version.
+  --run <file>  Run the specified file. Can be repeated to run several in sequence.`
+}
+
+func runCommands(source cmd.Source, eval *cmd.Evaluater) {
+	quit := false
+
+	for !quit {
+		input, finished := source.Next()
+
+		if finished || input == "quit" {
+			quit = true
+		} else {
+			result := eval.Evaluate(input)
+			fmt.Println(result)
+		}
+	}
 }
