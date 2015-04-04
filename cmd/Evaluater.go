@@ -19,7 +19,7 @@ type Evaluater struct {
 func NewEvaluater(style styling.Style, target Target) *Evaluater {
 	eval := &Evaluater{style: style, commands: []commandParser{}, target: target}
 
-	eval.commands = append(eval.commands, loadCommand, infoCommand, changeDirectoryCommand, dumpCommand)
+	eval.commands = append(eval.commands, loadCommand, infoCommand, changeDirectoryCommand, dumpCommand, diffCommand)
 
 	return eval
 }

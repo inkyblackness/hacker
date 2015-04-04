@@ -10,4 +10,6 @@ type Target interface {
 	ChangeDirectory(path string) string
 	// Dump returns a data dump of the current node
 	Dump() string
+	// Diff returns the difference of the current node to the source.
+	Diff(source string) string
 }

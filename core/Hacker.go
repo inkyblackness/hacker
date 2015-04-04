@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"strings"
 
+	"github.com/inkyblackness/hacker/diff"
 	"github.com/inkyblackness/hacker/styling"
 )
 
@@ -104,23 +105,10 @@ func (hacker *Hacker) CurrentDirectory() string {
 
 // ChangeDirectory changes the currently active node
 func (hacker *Hacker) ChangeDirectory(path string) (result string) {
-	parts := strings.Split(path, "/")
-	tempNode := hacker.curNode
+	resolved := hacker.resolve(path)
 
-	if parts[0] == "" {
-		tempNode = hacker.root
-	}
-	for _, part := range parts {
-		if tempNode != nil && part != "" {
-			if part == ".." {
-				tempNode = tempNode.Parent()
-			} else {
-				tempNode = tempNode.Resolve(part)
-			}
-		}
-	}
-	if tempNode != nil {
-		hacker.curNode = tempNode
+	if resolved != nil {
+		hacker.curNode = resolved
 		result = ""
 	} else {
 		result = hacker.style.Error()(`Directory not found: "`, path, `"`)
@@ -128,42 +116,121 @@ func (hacker *Hacker) ChangeDirectory(path string) (result string) {
 	return
 }
 
-func (hacker *Hacker) Dump() (result string) {
-	rightPad := func(input string, length int) string {
-		padded := fmt.Sprintf(fmt.Sprintf("%%s%%%ds", length), input, "")
-		return padded[0:length]
-	}
+func (hacker *Hacker) resolve(path string) (resolved DataNode) {
+	parts := strings.Split(path, "/")
 
+	resolved = hacker.curNode
+	if parts[0] == "" {
+		resolved = hacker.root
+	}
+	for _, part := range parts {
+		if resolved != nil && part != "" {
+			if part == ".." {
+				resolved = resolved.Parent()
+			} else {
+				resolved = resolved.Resolve(part)
+			}
+		}
+	}
+	return
+}
+
+func (hacker *Hacker) Dump() (result string) {
 	if hacker.curNode != nil {
 		data := hacker.curNode.Data()
-		hexDump := ""
-		asciiDump := ""
-
-		addLine := func(offset int) {
-			result = result + fmt.Sprintf("%04X %s  %s\n", offset, rightPad(hexDump, 49), rightPad(asciiDump, 17))
-			hexDump = ""
-			asciiDump = ""
-		}
-
+		styled := make([]styledData, len(data))
 		for index, value := range data {
-			if index == 0 {
-			} else if (index % 16) == 0 {
-				addLine(((index / 16) - 1) * 16)
-			} else if (index % 8) == 0 {
-				hexDump += " "
-				asciiDump += " "
+			styled[index] = styledData{value: value, styleFunc: fmt.Sprint}
+		}
+		result = createDump(styled)
+	}
+	return
+}
+
+func (hacker *Hacker) Diff(source string) (result string) {
+	sourceNode := hacker.resolve(source)
+	targetNode := hacker.curNode
+
+	if (targetNode != nil) && (sourceNode != nil) {
+		diffResult := diff.OfData(sourceNode.Data(), targetNode.Data())
+
+		filterMap := func(filteredType diff.DeltaType, styleFunc styling.StyleFunc) []styledData {
+			styled := make([]styledData, 0, len(diffResult))
+
+			for _, entry := range diffResult {
+				if entry.Delta != filteredType {
+					styledEntry := styledData{value: entry.Payload, styleFunc: fmt.Sprint}
+
+					if entry.Delta != diff.Common {
+						styledEntry.styleFunc = styleFunc
+					}
+					styled = append(styled, styledEntry)
+				}
 			}
 
-			hexDump += fmt.Sprintf(" %02X", value)
-			if value >= 0x20 && value < 0x80 {
-				asciiDump += string(value)
-			} else {
-				asciiDump += "."
-			}
+			return styled
 		}
-		if hexDump != "" {
-			addLine((len(data) / 16) * 16)
+
+		sourceData := filterMap(diff.RightOnly, hacker.style.Removed())
+		targetData := filterMap(diff.LeftOnly, hacker.style.Added())
+
+		result = createDump(sourceData)
+		result += "\n"
+		result += createDump(targetData)
+
+	} else {
+		result = hacker.style.Error()("Failed to resolve node, check path.")
+	}
+
+	return result
+}
+
+type styledData struct {
+	value     byte
+	styleFunc styling.StyleFunc
+}
+
+func createDump(data []styledData) (result string) {
+	rightPad := func(input string, missing int) string {
+		return fmt.Sprintf(fmt.Sprintf("%%s%%%ds", missing), input, "")
+	}
+	hexDump := ""
+	hexLen := 0
+	asciiDump := ""
+	asciiLen := 0
+
+	addLine := func(offset int) {
+		result = result + fmt.Sprintf("%04X %s  %s\n", offset, rightPad(hexDump, 49-hexLen), rightPad(asciiDump, 17-asciiLen))
+		hexDump = ""
+		hexLen = 0
+		asciiDump = ""
+		asciiLen = 0
+	}
+
+	for index, entry := range data {
+		value := entry.value
+
+		if index == 0 {
+		} else if (index % 16) == 0 {
+			addLine(((index / 16) - 1) * 16)
+		} else if (index % 8) == 0 {
+			hexDump += " "
+			asciiDump += " "
+			hexLen++
+			asciiLen++
 		}
+
+		hexDump += entry.styleFunc(fmt.Sprintf(" %02X", value))
+		hexLen += 3
+		if value >= 0x20 && value < 0x80 {
+			asciiDump += entry.styleFunc(string(value))
+		} else {
+			asciiDump += entry.styleFunc(".")
+		}
+		asciiLen += 1
+	}
+	if hexDump != "" {
+		addLine((len(data) / 16) * 16)
 	}
 	return
 }

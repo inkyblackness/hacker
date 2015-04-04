@@ -32,3 +32,8 @@ func (target *testTarget) Dump() string {
 
 	return fmt.Sprintf(`Dump()`)
 }
+
+func (target *testTarget) Diff(source string) string {
+
+	return fmt.Sprintf(`Diff()`)
+}
