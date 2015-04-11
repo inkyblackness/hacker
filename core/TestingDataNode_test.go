@@ -16,6 +16,11 @@ func (node *TestingDataNode) Parent() DataNode {
 	return nil
 }
 
+// Children returns no children.
+func (node *TestingDataNode) Children() []DataNode {
+	return nil
+}
+
 // Info returns human readable information about this node.
 func (node *TestingDataNode) Info() string {
 	return "testing"

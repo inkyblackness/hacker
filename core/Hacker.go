@@ -43,7 +43,7 @@ func (hacker *Hacker) Load(path1, path2 string) string {
 		fileNames1 := fileNames(files1)
 		release = FindRelease(fileNames1, nil)
 		root = newRootDataNode(release)
-		root.addLocation(newLocationDataNode(root, HD, path1, fileNames1, hacker.fileDataNodeProvider))
+		root.addChild(newLocationDataNode(root, HD, path1, fileNames1, hacker.fileDataNodeProvider))
 	} else {
 		files2, err2 := hacker.fileAccess.readDir(path2)
 
@@ -55,12 +55,12 @@ func (hacker *Hacker) Load(path1, path2 string) string {
 			if release == nil {
 				release = FindRelease(fileNames2, fileNames1)
 				root = newRootDataNode(release)
-				root.addLocation(newLocationDataNode(root, HD, path2, fileNames2, hacker.fileDataNodeProvider))
-				root.addLocation(newLocationDataNode(root, CD, path1, fileNames1, hacker.fileDataNodeProvider))
+				root.addChild(newLocationDataNode(root, HD, path2, fileNames2, hacker.fileDataNodeProvider))
+				root.addChild(newLocationDataNode(root, CD, path1, fileNames1, hacker.fileDataNodeProvider))
 			} else {
 				root = newRootDataNode(release)
-				root.addLocation(newLocationDataNode(root, HD, path1, fileNames1, hacker.fileDataNodeProvider))
-				root.addLocation(newLocationDataNode(root, CD, path2, fileNames2, hacker.fileDataNodeProvider))
+				root.addChild(newLocationDataNode(root, HD, path1, fileNames1, hacker.fileDataNodeProvider))
+				root.addChild(newLocationDataNode(root, CD, path2, fileNames2, hacker.fileDataNodeProvider))
 			}
 		} else {
 			result = hacker.style.Error()("Can't access directories")

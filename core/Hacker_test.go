@@ -83,9 +83,16 @@ func (suite *HackerSuite) TestLoadSetsUpRootNodeForHdOnly(c *check.C) {
 	suite.hacker.Load("dir1", "")
 
 	c.Assert(suite.hacker.root, check.Not(check.IsNil))
-	c.Check(suite.hacker.root.locations[HD].filePath, check.Equals, "dir1")
-	_, exists := suite.hacker.root.locations[CD]
-	c.Check(exists, check.Equals, false)
+	suite.checkLocationHasDir(c, HD, "dir1")
+	//c.Check(suite.hacker.root.Resolve(HD.String()).filePath, check.Equals, "dir1")
+	c.Check(len(suite.hacker.root.Children()), check.Equals, 1)
+}
+
+func (suite *HackerSuite) checkLocationHasDir(c *check.C, location DataLocation, expected string) {
+	node := suite.hacker.root.Resolve(location.String()).(*locationDataNode)
+
+	c.Assert(node, check.Not(check.IsNil))
+	c.Check(node.filePath, check.Equals, expected)
 }
 
 func (suite *HackerSuite) TestLoadSetsUpRootNodeForRelease(c *check.C) {
@@ -95,8 +102,8 @@ func (suite *HackerSuite) TestLoadSetsUpRootNodeForRelease(c *check.C) {
 	suite.hacker.Load("dir1", "dir2")
 
 	c.Assert(suite.hacker.root, check.Not(check.IsNil))
-	c.Check(suite.hacker.root.locations[HD].filePath, check.Equals, "dir1")
-	c.Check(suite.hacker.root.locations[CD].filePath, check.Equals, "dir2")
+	suite.checkLocationHasDir(c, HD, "dir1")
+	suite.checkLocationHasDir(c, CD, "dir2")
 }
 
 func (suite *HackerSuite) TestLoadSetsUpRootNodeForSwappedPaths(c *check.C) {
@@ -106,8 +113,8 @@ func (suite *HackerSuite) TestLoadSetsUpRootNodeForSwappedPaths(c *check.C) {
 	suite.hacker.Load("dir2", "dir1")
 
 	c.Assert(suite.hacker.root, check.Not(check.IsNil))
-	c.Check(suite.hacker.root.locations[HD].filePath, check.Equals, "dir1")
-	c.Check(suite.hacker.root.locations[CD].filePath, check.Equals, "dir2")
+	suite.checkLocationHasDir(c, HD, "dir1")
+	suite.checkLocationHasDir(c, CD, "dir2")
 }
 
 func (suite *HackerSuite) TestInfoWithoutDataReturnsHintToLoad(c *check.C) {
@@ -121,7 +128,6 @@ func (suite *HackerSuite) givenAStandardSetup() {
 	suite.testDirectories["dir1"] = testFiles(hdFiles...)
 	suite.testDirectories["dir2"] = testFiles(cdFiles...)
 	suite.hacker.Load("dir1", "dir2")
-
 }
 
 func (suite *HackerSuite) TestInfoAfterLoadReturnsReleaseInfo(c *check.C) {
@@ -137,7 +143,7 @@ func (suite *HackerSuite) TestChangeDirectoryChangesCurrentNode(c *check.C) {
 
 	suite.hacker.ChangeDirectory("hd")
 
-	c.Check(suite.hacker.Info(), check.Equals, suite.hacker.root.locations[HD].Info())
+	c.Check(suite.hacker.Info(), check.Equals, suite.hacker.root.Resolve(HD.String()).Info())
 }
 
 func (suite *HackerSuite) TestChangeDirectoryHandlesStartingSlash(c *check.C) {
@@ -146,7 +152,7 @@ func (suite *HackerSuite) TestChangeDirectoryHandlesStartingSlash(c *check.C) {
 
 	suite.hacker.ChangeDirectory("/cd")
 
-	c.Check(suite.hacker.Info(), check.Equals, suite.hacker.root.locations[CD].Info())
+	c.Check(suite.hacker.Info(), check.Equals, suite.hacker.root.Resolve(CD.String()).Info())
 }
 
 func (suite *HackerSuite) TestChangeDirectoryHandlesDotDot(c *check.C) {
@@ -155,7 +161,7 @@ func (suite *HackerSuite) TestChangeDirectoryHandlesDotDot(c *check.C) {
 
 	suite.hacker.ChangeDirectory("../cd")
 
-	c.Check(suite.hacker.Info(), check.Equals, suite.hacker.root.locations[CD].Info())
+	c.Check(suite.hacker.Info(), check.Equals, suite.hacker.root.Resolve(CD.String()).Info())
 }
 
 func (suite *HackerSuite) TestChangeDirectoryIgnoresTrailingSlash(c *check.C) {
@@ -163,7 +169,7 @@ func (suite *HackerSuite) TestChangeDirectoryIgnoresTrailingSlash(c *check.C) {
 
 	suite.hacker.ChangeDirectory("hd/")
 
-	c.Check(suite.hacker.Info(), check.Equals, suite.hacker.root.locations[HD].Info())
+	c.Check(suite.hacker.Info(), check.Equals, suite.hacker.root.Resolve(HD.String()).Info())
 }
 
 func (suite *HackerSuite) TestCurrentDirctoryReturnsCurrentPath(c *check.C) {

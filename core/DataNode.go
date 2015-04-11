@@ -4,6 +4,8 @@ package core
 type DataNode interface {
 	// Parent returns the parent node or nil if none known.
 	Parent() DataNode
+	// Children returns all currently available DataNodes from this node.
+	Children() []DataNode
 	// Info returns human readable information about this node.
 	Info() string
 	// ID returns the identification for this node. The returned value must be

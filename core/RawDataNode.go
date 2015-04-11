@@ -11,6 +11,10 @@ func (node *rawDataNode) Parent() DataNode {
 	return node.parentNode
 }
 
+func (node *rawDataNode) Children() []DataNode {
+	return nil
+}
+
 func (node *rawDataNode) ID() string {
 	return node.id
 }

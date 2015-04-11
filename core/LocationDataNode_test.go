@@ -37,15 +37,17 @@ func (suite *LocationDataNodeSuite) TestResolveOfKnownFileReturnsDataNode(c *che
 }
 
 func (suite *LocationDataNodeSuite) TestResolveOfKnownFileReturnsSameDataNodeSecondTime(c *check.C) {
-	var dataNode1 DataNode = NewTestingDataNode("firstFile")
-	var dataNode2 DataNode = NewTestingDataNode("secondFile")
+	dataNode1 := NewTestingDataNode("file1.res")
+	dataNode1.data = []byte{0x01}
+	dataNode2 := NewTestingDataNode("file1.res")
+	dataNode2.data = []byte{0x02}
 	suite.fileDataNodeProvider.nodesByFileName["file1.res"] = dataNode1
 	suite.locationDataNode.Resolve("file1.res")
 	suite.fileDataNodeProvider.nodesByFileName["file1.res"] = dataNode2
 
 	result := suite.locationDataNode.Resolve("file1.res")
 
-	c.Check(result.ID(), check.Equals, "firstFile")
+	c.Check(result.Data(), check.DeepEquals, []byte{0x01})
 }
 
 func (suite *LocationDataNodeSuite) TestResolveOfKnownFailingFileReturnsNil(c *check.C) {

@@ -8,50 +8,24 @@ import (
 )
 
 type objectPropertyDataNode struct {
-	parentNode DataNode
-	id         res.ObjectID
-
-	properties map[string]DataNode
+	parentDataNode
 }
 
 func newObjectPropertyDataNode(parentNode DataNode, id res.ObjectID, provider objprop.Provider) *objectPropertyDataNode {
+	idString := fmt.Sprintf("%d-%d-%d", id.Class, id.Subclass, id.Type)
 	node := &objectPropertyDataNode{
-		parentNode: parentNode,
-		id:         id,
-		properties: make(map[string]DataNode)}
+		parentDataNode: makeParentDataNode(parentNode, idString, 3)}
 
 	objData := provider.Provide(id)
-	node.properties["generic"] = newGenericPropertyDataNode(node, objData.Generic)
-	node.properties["specific"] = newSpecificPropertyDataNode(node, objData.Specific)
-	node.properties["common"] = newCommonPropertyDataNode(node, objData.Common)
+	node.addChild(newGenericPropertyDataNode(node, objData.Generic))
+	node.addChild(newSpecificPropertyDataNode(node, objData.Specific))
+	node.addChild(newCommonPropertyDataNode(node, objData.Common))
 
 	return node
-}
-
-func (node *objectPropertyDataNode) Parent() DataNode {
-	return node.parentNode
 }
 
 func (node *objectPropertyDataNode) Info() string {
 	info := ""
 
 	return info
-}
-
-func (node *objectPropertyDataNode) ID() string {
-	return fmt.Sprintf("%d-%d-%d", node.id.Class, node.id.Subclass, node.id.Type)
-}
-
-func (node *objectPropertyDataNode) Resolve(path string) (resolved DataNode) {
-	temp, existing := node.properties[path]
-
-	if existing {
-		resolved = temp
-	}
-
-	return
-}
-
-func (node *objectPropertyDataNode) Data() []byte {
-	return nil
 }

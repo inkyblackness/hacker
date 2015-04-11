@@ -7,39 +7,20 @@ import (
 )
 
 type texturePropertyDataNode struct {
-	parentNode DataNode
-	id         res.TextureID
-
-	data []byte
+	rawDataNode
 }
 
 func newTexturePropertyDataNode(parentNode DataNode, id res.TextureID, data []byte) *texturePropertyDataNode {
-	node := &texturePropertyDataNode{
+	node := &texturePropertyDataNode{rawDataNode{
 		parentNode: parentNode,
-		id:         id,
-		data:       data}
+		id:         fmt.Sprintf("%d", id),
+		data:       data}}
 
 	return node
-}
-
-func (node *texturePropertyDataNode) Parent() DataNode {
-	return node.parentNode
 }
 
 func (node *texturePropertyDataNode) Info() string {
 	info := ""
 
 	return info
-}
-
-func (node *texturePropertyDataNode) ID() string {
-	return fmt.Sprintf("%d", node.id)
-}
-
-func (node *texturePropertyDataNode) Resolve(path string) DataNode {
-	return nil
-}
-
-func (node *texturePropertyDataNode) Data() []byte {
-	return node.data
 }

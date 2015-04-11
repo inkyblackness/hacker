@@ -8,51 +8,25 @@ import (
 )
 
 type chunkDataNode struct {
-	parentNode DataNode
-	chunkID    res.ResourceID
+	parentDataNode
 
-	holder         chunk.BlockHolder
-	blockDataNodes []*blockDataNode
+	holder chunk.BlockHolder
 }
 
 func newChunkDataNode(parentNode DataNode, chunkID res.ResourceID, holder chunk.BlockHolder) *chunkDataNode {
 	node := &chunkDataNode{
-		parentNode:     parentNode,
-		chunkID:        chunkID,
-		holder:         holder,
-		blockDataNodes: make([]*blockDataNode, holder.BlockCount())}
+		parentDataNode: makeParentDataNode(parentNode, fmt.Sprintf("%04X", chunkID), int(holder.BlockCount())),
+		holder:         holder}
 
 	for i := uint16(0); i < holder.BlockCount(); i++ {
-		node.blockDataNodes[i] = newBlockDataNode(node, i, holder.BlockData(i))
+		node.addChild(newBlockDataNode(node, i, holder.BlockData(i)))
 	}
 
 	return node
-}
-
-func (node *chunkDataNode) Parent() DataNode {
-	return node.parentNode
 }
 
 func (node *chunkDataNode) Info() string {
 	info := fmt.Sprintf("Available blocks: %d\nContent type: 0x%02X", node.holder.BlockCount(), node.holder.ContentType())
 
 	return info
-}
-
-func (node *chunkDataNode) ID() string {
-	return fmt.Sprintf("%04X", node.chunkID)
-}
-
-func (node *chunkDataNode) Resolve(path string) (resolved DataNode) {
-	for _, temp := range node.blockDataNodes {
-		if temp.ID() == path {
-			resolved = temp
-		}
-	}
-
-	return
-}
-
-func (node *chunkDataNode) Data() []byte {
-	return nil
 }

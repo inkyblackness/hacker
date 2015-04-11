@@ -7,6 +7,10 @@ import (
 // DataLocation specifies where data files are stored
 type DataLocation string
 
+func (location DataLocation) String() string {
+	return string(location)
+}
+
 const (
 	// HD is the data location for often-accessed files
 	HD = DataLocation("hd")
