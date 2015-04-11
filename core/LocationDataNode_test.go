@@ -15,7 +15,7 @@ var _ = check.Suite(&LocationDataNodeSuite{})
 func (suite *LocationDataNodeSuite) SetUpTest(c *check.C) {
 	suite.fileDataNodeProvider = NewTestingFileDataNodeProvider()
 	suite.locationDataNode = newLocationDataNode(suite.parentNode, HD,
-		"/filePath", []string{"file1.res", "file2.res"}, suite.fileDataNodeProvider)
+		"/filePath", []string{"file1.res", "file2.res", "UPPERCASE.RES"}, suite.fileDataNodeProvider)
 }
 
 func (suite *LocationDataNodeSuite) TestResolveOfUnknownFileReturnsNil(c *check.C) {
@@ -64,4 +64,13 @@ func (suite *LocationDataNodeSuite) TestResolveOfKnownFailingFileReturnsDataNode
 	result := suite.locationDataNode.Resolve("file2.res")
 
 	c.Check(result.ID(), check.Equals, "file2.res")
+}
+
+func (suite *LocationDataNodeSuite) TestResolveOfLowerCaseFileNameOfUpperCaseFileReturnsDataNode(c *check.C) {
+	var dataNode DataNode = NewTestingDataNode("uppercase.res")
+	suite.fileDataNodeProvider.nodesByFileName["UPPERCASE.RES"] = dataNode
+
+	result := suite.locationDataNode.Resolve("uppercase.res")
+
+	c.Check(result, check.Equals, dataNode)
 }

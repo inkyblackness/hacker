@@ -2,6 +2,7 @@ package core
 
 import (
 	"fmt"
+	"strings"
 
 	"github.com/inkyblackness/res"
 	"github.com/inkyblackness/res/objprop"
@@ -13,7 +14,7 @@ type objectPropertiesDataNode struct {
 
 func NewObjectPropertiesDataNode(parentNode DataNode, name string,
 	provider objprop.Provider, classes []objprop.ClassDescriptor) DataNode {
-	node := &objectPropertiesDataNode{parentDataNode: makeParentDataNode(parentNode, name, 0)}
+	node := &objectPropertiesDataNode{parentDataNode: makeParentDataNode(parentNode, strings.ToLower(name), 0)}
 
 	for classIndex, classDesc := range classes {
 		for subclassIndex, subclassDesc := range classDesc.Subclasses {

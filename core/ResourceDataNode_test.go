@@ -39,3 +39,9 @@ func (suite *ResourceDataNodeSuite) TestResolveReturnsDataNodeForKnownID(c *chec
 	c.Assert(result, check.NotNil)
 	c.Check(result.ID(), check.Equals, "0050")
 }
+
+func (suite *ResourceDataNodeSuite) TestIDReturnsFileNameInLowerCase(c *check.C) {
+	suite.node = NewResourceDataNode(suite.parentNode, "TESTFILE.RES", suite.chunkHolder)
+
+	c.Check(suite.node.ID(), check.Equals, "testfile.res")
+}

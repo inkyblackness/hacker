@@ -1,5 +1,9 @@
 package core
 
+import (
+	"strings"
+)
+
 type locationDataNode struct {
 	parentDataNode
 
@@ -17,8 +21,8 @@ func newLocationDataNode(parentNode DataNode, dataLocation DataLocation,
 		fileNames:      fileNames}
 
 	node.setChildResolver(func(path string) (resolved DataNode) {
-		if node.isFileKnown(path) {
-			resolved = fileDataNodeProvider.Provide(node, node.filePath, path)
+		if resolvedName := node.resolveFileName(path); resolvedName != "" {
+			resolved = fileDataNodeProvider.Provide(node, node.filePath, resolvedName)
 		}
 		return
 	})
@@ -37,10 +41,12 @@ func (node *locationDataNode) Info() string {
 	return info
 }
 
-func (node *locationDataNode) isFileKnown(fileName string) (result bool) {
+func (node *locationDataNode) resolveFileName(path string) (result string) {
+	lowerPath := strings.ToLower(path)
+
 	for _, knownName := range node.fileNames {
-		if knownName == fileName {
-			result = true
+		if strings.ToLower(knownName) == lowerPath {
+			result = knownName
 		}
 	}
 	return

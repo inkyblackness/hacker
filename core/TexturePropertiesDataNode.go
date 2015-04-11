@@ -2,6 +2,7 @@ package core
 
 import (
 	"fmt"
+	"strings"
 
 	"github.com/inkyblackness/res"
 	"github.com/inkyblackness/res/textprop"
@@ -13,7 +14,7 @@ type texturePropertiesDataNode struct {
 
 func NewTexturePropertiesDataNode(parentNode DataNode, name string, provider textprop.Provider) DataNode {
 	node := &texturePropertiesDataNode{
-		parentDataNode: makeParentDataNode(parentNode, name, int(provider.TextureCount()))}
+		parentDataNode: makeParentDataNode(parentNode, strings.ToLower(name), int(provider.TextureCount()))}
 
 	for i := uint32(0); i < provider.TextureCount(); i++ {
 		id := res.TextureID(i)
