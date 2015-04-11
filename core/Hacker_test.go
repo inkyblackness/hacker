@@ -191,3 +191,71 @@ func (suite *HackerSuite) TestDumpReturnsCurrentDataInDumpFormat(c *check.C) {
 	c.Check(result, check.Equals, "0000  00 01 02 03 04 05 06 07  08 09 0A 0B 0C 0D 0E 0F  ........ ........\n"+
 		"0010  41                                                A                \n")
 }
+
+func (suite *HackerSuite) TestDiffOfNodesWithoutDataComparesChildren(c *check.C) {
+	parent1 := NewTestingDataNode("parent1")
+	parent1.addChild(NewTestingDataNode("child1"))
+	parent2 := NewTestingDataNode("parent2")
+	suite.givenAStandardSetup()
+
+	suite.hacker.root.addChild(parent1)
+	suite.hacker.curNode = parent2
+
+	result := suite.hacker.Diff("/parent1")
+
+	c.Check(result, check.Equals, "- /parent1/child1\n")
+}
+
+func (suite *HackerSuite) TestDiffNodesReportsRemovedChildren(c *check.C) {
+	parent1 := NewTestingDataNode("parent1")
+	parent1.addChild(NewTestingDataNode("child1"))
+	parent2 := NewTestingDataNode("parent2")
+
+	result := suite.hacker.diffNodes("/parent1", parent1, "/parent2", parent2)
+
+	c.Check(result, check.Equals, "- /parent1/child1\n")
+}
+
+func (suite *HackerSuite) TestDiffNodesReportsAddedChildren(c *check.C) {
+	parent1 := NewTestingDataNode("parent1")
+	parent2 := NewTestingDataNode("parent2")
+	parent2.addChild(NewTestingDataNode("child1"))
+
+	result := suite.hacker.diffNodes("/parent1", parent1, "/parent2", parent2)
+
+	c.Check(result, check.Equals, "+ /parent2/child1\n")
+}
+
+func (suite *HackerSuite) TestDiffNodesReportsChangeInData(c *check.C) {
+	parent1 := NewTestingDataNode("parent1")
+	child11 := NewTestingDataNode("child1")
+	child11.data = []byte{0x01, 0x02}
+	parent1.addChild(child11)
+	parent2 := NewTestingDataNode("parent2")
+	child21 := NewTestingDataNode("child1")
+	child21.data = []byte{0x02, 0x03}
+	parent2.addChild(child21)
+
+	result := suite.hacker.diffNodes("/parent1", parent1, "/parent2", parent2)
+
+	c.Check(result, check.Equals, "M /parent2/child1\n")
+}
+
+func (suite *HackerSuite) TestDiffNodesReportsChangeInDataRecursive(c *check.C) {
+	parent1 := NewTestingDataNode("parent1")
+	child11 := NewTestingDataNode("child1")
+	child111 := NewTestingDataNode("child1.1")
+	child111.data = []byte{0x01, 0x02}
+	child11.addChild(child111)
+	parent1.addChild(child11)
+	parent2 := NewTestingDataNode("parent2")
+	child21 := NewTestingDataNode("child1")
+	child211 := NewTestingDataNode("child1.1")
+	child211.data = []byte{0x02, 0x03}
+	child21.addChild(child211)
+	parent2.addChild(child21)
+
+	result := suite.hacker.diffNodes("/parent1", parent1, "/parent2", parent2)
+
+	c.Check(result, check.Equals, "M /parent2/child1/child1.1\n")
+}

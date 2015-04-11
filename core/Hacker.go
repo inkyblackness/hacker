@@ -1,6 +1,7 @@
 package core
 
 import (
+	"bytes"
 	"fmt"
 	"strings"
 
@@ -152,32 +153,14 @@ func (hacker *Hacker) Diff(source string) (result string) {
 	targetNode := hacker.curNode
 
 	if (targetNode != nil) && (sourceNode != nil) {
-		diffResult := diff.OfData(sourceNode.Data(), targetNode.Data())
+		sourceData := sourceNode.Data()
+		targetData := targetNode.Data()
 
-		filterMap := func(filteredType diff.DeltaType, styleFunc styling.StyleFunc) []styledData {
-			styled := make([]styledData, 0, len(diffResult))
-
-			for _, entry := range diffResult {
-				if entry.Delta != filteredType {
-					styledEntry := styledData{value: entry.Payload, styleFunc: fmt.Sprint}
-
-					if entry.Delta != diff.Common {
-						styledEntry.styleFunc = styleFunc
-					}
-					styled = append(styled, styledEntry)
-				}
-			}
-
-			return styled
+		if len(sourceData) > 0 || len(targetData) > 0 {
+			result = hacker.diffData(sourceData, targetData)
+		} else {
+			result = hacker.diffNodes(source, sourceNode, hacker.CurrentDirectory(), targetNode)
 		}
-
-		sourceData := filterMap(diff.RightOnly, hacker.style.Removed())
-		targetData := filterMap(diff.LeftOnly, hacker.style.Added())
-
-		result = createDump(sourceData)
-		result += "\n"
-		result += createDump(targetData)
-
 	} else {
 		result = hacker.style.Error()("Failed to resolve node, check path.")
 	}
@@ -185,52 +168,70 @@ func (hacker *Hacker) Diff(source string) (result string) {
 	return result
 }
 
-type styledData struct {
-	value     byte
-	styleFunc styling.StyleFunc
+func (hacker *Hacker) diffData(sourceData []byte, targetData []byte) string {
+	diffResult := diff.OfData(sourceData, targetData)
+
+	filterMap := func(filteredType diff.DeltaType, styleFunc styling.StyleFunc) []styledData {
+		styled := make([]styledData, 0, len(diffResult))
+
+		for _, entry := range diffResult {
+			if entry.Delta != filteredType {
+				styledEntry := styledData{value: entry.Payload, styleFunc: fmt.Sprint}
+
+				if entry.Delta != diff.Common {
+					styledEntry.styleFunc = styleFunc
+				}
+				styled = append(styled, styledEntry)
+			}
+		}
+
+		return styled
+	}
+
+	styledSourceData := filterMap(diff.RightOnly, hacker.style.Removed())
+	styledTargetData := filterMap(diff.LeftOnly, hacker.style.Added())
+
+	return createDump(styledSourceData) + "\n" + createDump(styledTargetData)
 }
 
-func createDump(data []styledData) (result string) {
-	rightPad := func(input string, missing int) string {
-		return fmt.Sprintf(fmt.Sprintf("%%s%%%ds", missing), input, "")
-	}
-	hexDump := ""
-	hexLen := 0
-	asciiDump := ""
-	asciiLen := 0
+func (hacker *Hacker) diffNodes(sourcePath string, sourceNode DataNode, targetPath string, targetNode DataNode) (result string) {
+	sourceChildren := sourceNode.Children()
+	targetChildren := targetNode.Children()
 
-	addLine := func(offset int) {
-		result = result + fmt.Sprintf("%04X %s  %s\n", offset, rightPad(hexDump, 49-hexLen), rightPad(asciiDump, 17-asciiLen))
-		hexDump = ""
-		hexLen = 0
-		asciiDump = ""
-		asciiLen = 0
-	}
+	checkNodeExistence := func(basePath string, nodes []DataNode, refNodes []DataNode, diffSign string) {
+		for _, node := range nodes {
+			nodePath := basePath + "/" + node.ID()
+			refNode := hacker.findNodeByID(refNodes, node.ID())
 
-	for index, entry := range data {
-		value := entry.value
-
-		if index == 0 {
-		} else if (index % 16) == 0 {
-			addLine(((index / 16) - 1) * 16)
-		} else if (index % 8) == 0 {
-			hexDump += " "
-			asciiDump += " "
-			hexLen++
-			asciiLen++
+			if refNode == nil {
+				result = result + diffSign + " " + nodePath + "\n"
+			}
 		}
 
-		hexDump += entry.styleFunc(fmt.Sprintf(" %02X", value))
-		hexLen += 3
-		if value >= 0x20 && value < 0x80 {
-			asciiDump += entry.styleFunc(string(value))
-		} else {
-			asciiDump += entry.styleFunc(".")
-		}
-		asciiLen += 1
 	}
-	if hexDump != "" {
-		addLine((len(data) / 16) * 16)
+	checkNodeExistence(sourcePath, sourceChildren, targetChildren, "-")
+	checkNodeExistence(targetPath, targetChildren, sourceChildren, "+")
+
+	for _, targetChild := range targetChildren {
+		sourceChild := hacker.findNodeByID(sourceChildren, targetChild.ID())
+		if sourceChild != nil {
+			targetChildPath := targetPath + "/" + targetChild.ID()
+			result = result + hacker.diffNodes(sourcePath+"/"+sourceChild.ID(), sourceChild, targetChildPath, targetChild)
+		}
+	}
+
+	if bytes.Compare(sourceNode.Data(), targetNode.Data()) != 0 {
+		result = result + "M " + targetPath + "\n"
+	}
+
+	return
+}
+
+func (hacker *Hacker) findNodeByID(nodes []DataNode, id string) (found DataNode) {
+	for _, node := range nodes {
+		if node.ID() == id {
+			found = node
+		}
 	}
 	return
 }
