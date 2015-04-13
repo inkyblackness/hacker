@@ -22,7 +22,7 @@ func (suite *ResourceDataNodeSuite) SetUpTest(c *check.C) {
 func (suite *ResourceDataNodeSuite) TestInfoReturnsListOfAvailableChunkIDs(c *check.C) {
 	suite.chunkHolder.Consume(res.ResourceID(0x0100), chunk.NewBlockHolder(chunk.BasicChunkType, res.Data, [][]byte{}))
 	suite.chunkHolder.Consume(res.ResourceID(0x0050), chunk.NewBlockHolder(chunk.BasicChunkType, res.Data, [][]byte{}))
-	suite.node = NewResourceDataNode(suite.parentNode, "testFile.res", suite.chunkHolder)
+	suite.node = NewResourceDataNode(suite.parentNode, "testFile.res", suite.chunkHolder, nil)
 
 	result := suite.node.Info()
 
@@ -32,7 +32,7 @@ func (suite *ResourceDataNodeSuite) TestInfoReturnsListOfAvailableChunkIDs(c *ch
 func (suite *ResourceDataNodeSuite) TestResolveReturnsDataNodeForKnownID(c *check.C) {
 	suite.chunkHolder.Consume(res.ResourceID(0x0100), chunk.NewBlockHolder(chunk.BasicChunkType, res.Data, [][]byte{}))
 	suite.chunkHolder.Consume(res.ResourceID(0x0050), chunk.NewBlockHolder(chunk.BasicChunkType, res.Data, [][]byte{}))
-	suite.node = NewResourceDataNode(suite.parentNode, "testFile.res", suite.chunkHolder)
+	suite.node = NewResourceDataNode(suite.parentNode, "testFile.res", suite.chunkHolder, nil)
 
 	result := suite.node.Resolve("0050")
 
@@ -41,7 +41,7 @@ func (suite *ResourceDataNodeSuite) TestResolveReturnsDataNodeForKnownID(c *chec
 }
 
 func (suite *ResourceDataNodeSuite) TestIDReturnsFileNameInLowerCase(c *check.C) {
-	suite.node = NewResourceDataNode(suite.parentNode, "TESTFILE.RES", suite.chunkHolder)
+	suite.node = NewResourceDataNode(suite.parentNode, "TESTFILE.RES", suite.chunkHolder, nil)
 
 	c.Check(suite.node.ID(), check.Equals, "testfile.res")
 }
