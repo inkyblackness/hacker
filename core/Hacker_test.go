@@ -259,3 +259,14 @@ func (suite *HackerSuite) TestDiffNodesReportsChangeInDataRecursive(c *check.C) 
 
 	c.Check(result, check.Equals, "M /parent2/child1/child1.1\n")
 }
+
+func (suite *HackerSuite) TestPutWorksWithDataNodes(c *check.C) {
+
+	node := NewTestingDataNode("rawNode")
+	node.data = []byte{0x01, 0x02, 0x03, 0x04}
+
+	suite.hacker.curNode = node
+	suite.hacker.Put(0, []byte{0x0A, 0x0B})
+
+	c.Check(node.data, check.DeepEquals, []byte{0x0A, 0x0B, 0x03, 0x04})
+}

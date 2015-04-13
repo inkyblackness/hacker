@@ -245,3 +245,20 @@ func (hacker *Hacker) findNodeByID(nodes []DataNode, id string) (found DataNode)
 	}
 	return
 }
+
+func (hacker *Hacker) Put(offset uint32, data []byte) (result string) {
+	if hacker.curNode != nil {
+		nodeData := hacker.curNode.Data()
+		if int(offset)+len(data) <= len(nodeData) {
+			oldData := make([]byte, len(nodeData))
+			copy(oldData, nodeData)
+			copy(nodeData[offset:], data)
+			result = hacker.diffData(oldData, nodeData)
+		} else {
+			result = hacker.style.Error()(`Data length mismatch`)
+		}
+	} else {
+		result = hacker.style.Error()(`No data loaded`)
+	}
+	return
+}

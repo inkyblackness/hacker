@@ -8,6 +8,7 @@ type testTarget struct {
 	infoParam [][]interface{}
 	cdParam   [][]interface{}
 	dumpParam [][]interface{}
+	putParam  [][]interface{}
 }
 
 func (target *testTarget) Load(path1, path2 string) string {
@@ -43,4 +44,10 @@ func (target *testTarget) Dump() string {
 func (target *testTarget) Diff(source string) string {
 
 	return fmt.Sprintf(`Diff()`)
+}
+
+func (target *testTarget) Put(offset uint32, data []byte) string {
+	target.putParam = append(target.putParam, []interface{}{offset, data})
+
+	return fmt.Sprintf(`Put(%d, %v)`, offset, data)
 }
