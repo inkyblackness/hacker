@@ -37,7 +37,11 @@ func (provider *fileBasedFileDataNodeProvider) Provide(parentNode DataNode, file
 			objProvider, objErr := objDos.NewProvider(reader, classes)
 
 			if objErr == nil {
-				node = NewObjectPropertiesDataNode(parentNode, fileName, objProvider, classes)
+				consumerFactory := func() objprop.Consumer {
+					outFile, _ := provider.access.createFile(filePathName)
+					return objDos.NewConsumer(outFile, classes)
+				}
+				node = NewObjectPropertiesDataNode(parentNode, fileName, objProvider, classes, consumerFactory)
 			}
 		} else if lowercaseFileName == "textprop.dat" {
 			propProvider, propErr := textDos.NewProvider(reader)

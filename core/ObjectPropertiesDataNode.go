@@ -10,11 +10,14 @@ import (
 
 type objectPropertiesDataNode struct {
 	parentDataNode
+	consumerFactory func() objprop.Consumer
 }
 
 func NewObjectPropertiesDataNode(parentNode DataNode, name string,
-	provider objprop.Provider, classes []objprop.ClassDescriptor) DataNode {
-	node := &objectPropertiesDataNode{parentDataNode: makeParentDataNode(parentNode, strings.ToLower(name), 0)}
+	provider objprop.Provider, classes []objprop.ClassDescriptor, consumerFactory func() objprop.Consumer) DataNode {
+	node := &objectPropertiesDataNode{
+		parentDataNode:  makeParentDataNode(parentNode, strings.ToLower(name), 0),
+		consumerFactory: consumerFactory}
 
 	for classIndex, classDesc := range classes {
 		for subclassIndex, subclassDesc := range classDesc.Subclasses {
@@ -36,5 +39,18 @@ func (node *objectPropertiesDataNode) Info() string {
 }
 
 func (node *objectPropertiesDataNode) save() string {
-	return ""
+	consumer := node.consumerFactory()
+	defer consumer.Finish()
+
+	for _, child := range node.Children() {
+		objNode := child.(*objectPropertyDataNode)
+		objData := objprop.ObjectData{
+			Common:   child.Resolve("common").Data(),
+			Generic:  child.Resolve("generic").Data(),
+			Specific: child.Resolve("specific").Data()}
+
+		consumer.Consume(objNode.objectID, objData)
+	}
+
+	return node.ID() + "\n"
 }
