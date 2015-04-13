@@ -4,6 +4,7 @@ import "fmt"
 
 type testTarget struct {
 	loadParam [][]interface{}
+	saveParam [][]interface{}
 	infoParam [][]interface{}
 	cdParam   [][]interface{}
 	dumpParam [][]interface{}
@@ -13,6 +14,12 @@ func (target *testTarget) Load(path1, path2 string) string {
 	target.loadParam = append(target.loadParam, []interface{}{path1, path2})
 
 	return fmt.Sprintf(`Load("%s", "%s")`, path1, path2)
+}
+
+func (target *testTarget) Save() string {
+	target.saveParam = append(target.saveParam, []interface{}{})
+
+	return fmt.Sprintf(`Save()`)
 }
 
 func (target *testTarget) Info() string {

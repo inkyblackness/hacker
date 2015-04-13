@@ -34,3 +34,7 @@ func (node *objectPropertiesDataNode) Info() string {
 
 	return info
 }
+
+func (node *objectPropertiesDataNode) save() string {
+	return ""
+}

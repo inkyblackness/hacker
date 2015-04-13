@@ -12,4 +12,6 @@ type Target interface {
 	Dump() string
 	// Diff returns the difference of the current node to the source.
 	Diff(source string) string
+	// Save re-encodes all loaded data and overwrites the corresponding files.
+	Save() string
 }

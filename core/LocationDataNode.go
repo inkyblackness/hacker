@@ -51,3 +51,11 @@ func (node *locationDataNode) resolveFileName(path string) (result string) {
 	}
 	return
 }
+
+func (node *locationDataNode) save() (result string) {
+	for _, child := range node.Children() {
+		childSaveable := child.(saveable)
+		result += childSaveable.save()
+	}
+	return
+}

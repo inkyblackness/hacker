@@ -8,6 +8,7 @@ import (
 	chunkDos "github.com/inkyblackness/res/chunk/dos"
 	"github.com/inkyblackness/res/objprop"
 	objDos "github.com/inkyblackness/res/objprop/dos"
+	"github.com/inkyblackness/res/textprop"
 	textDos "github.com/inkyblackness/res/textprop/dos"
 )
 
@@ -24,7 +25,8 @@ func newFileDataNodeProvider(access fileAccess) FileDataNodeProvider {
 
 // Provide tries to resolve and return a DataNode for the given file.
 func (provider *fileBasedFileDataNodeProvider) Provide(parentNode DataNode, filePath, fileName string) (node DataNode) {
-	rawData, err := provider.access.readFile(filepath.Join(filePath, fileName))
+	filePathName := filepath.Join(filePath, fileName)
+	rawData, err := provider.access.readFile(filePathName)
 
 	if err == nil {
 		lowercaseFileName := strings.ToLower(fileName)
@@ -41,7 +43,11 @@ func (provider *fileBasedFileDataNodeProvider) Provide(parentNode DataNode, file
 			propProvider, propErr := textDos.NewProvider(reader)
 
 			if propErr == nil {
-				node = NewTexturePropertiesDataNode(parentNode, fileName, propProvider)
+				consumerFactory := func() textprop.Consumer {
+					outFile, _ := provider.access.createFile(filePathName)
+					return textDos.NewConsumer(outFile)
+				}
+				node = NewTexturePropertiesDataNode(parentNode, fileName, propProvider, consumerFactory)
 			}
 		} else {
 			chunkProvider, chunkErr := chunkDos.NewChunkProvider(reader)

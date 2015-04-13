@@ -23,3 +23,11 @@ func (node *rootDataNode) Info() string {
 
 	return info
 }
+
+func (node *rootDataNode) save() (result string) {
+	for _, child := range node.Children() {
+		locationNode := child.(saveable)
+		result += locationNode.save()
+	}
+	return
+}

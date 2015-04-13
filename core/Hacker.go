@@ -78,6 +78,16 @@ func (hacker *Hacker) Load(path1, path2 string) string {
 	return result
 }
 
+// Save re-encodes all loaded data and overwrites the corresponding files.
+func (hacker *Hacker) Save() (result string) {
+	if hacker.root != nil {
+		result = hacker.root.save()
+	} else {
+		result = hacker.style.Error()(`No data loaded. Use the [load "path1" "path2"] command.`)
+	}
+	return
+}
+
 // Info returns the status of the current node
 func (hacker *Hacker) Info() string {
 	var result string

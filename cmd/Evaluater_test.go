@@ -29,6 +29,7 @@ func (suite *EvaluaterSuite) TestEvaluateUnderstandsCommands(c *check.C) {
 	suite.verifyCommand(c, `info`, `Info()`)
 	suite.verifyCommand(c, `cd test`, `Cd(test)`)
 	suite.verifyCommand(c, `dump`, `Dump()`)
+	suite.verifyCommand(c, `save`, `Save()`)
 }
 
 func (suite *EvaluaterSuite) verifyCommand(c *check.C, input string, output string) {

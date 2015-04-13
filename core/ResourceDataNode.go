@@ -34,3 +34,7 @@ func (node *resourceDataNode) Info() string {
 
 	return info
 }
+
+func (node *resourceDataNode) save() string {
+	return ""
+}
