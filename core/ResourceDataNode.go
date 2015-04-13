@@ -9,14 +9,17 @@ import (
 type resourceDataNode struct {
 	parentDataNode
 
-	fileName string
+	fileName        string
+	consumerFactory func() chunk.Consumer
 }
 
-func NewResourceDataNode(parentNode DataNode, name string, provider chunk.Provider) DataNode {
+func NewResourceDataNode(parentNode DataNode, name string,
+	provider chunk.Provider, consumerFactory func() chunk.Consumer) DataNode {
 	ids := provider.IDs()
 	node := &resourceDataNode{
-		parentDataNode: makeParentDataNode(parentNode, strings.ToLower(name), len(ids)),
-		fileName:       name}
+		parentDataNode:  makeParentDataNode(parentNode, strings.ToLower(name), len(ids)),
+		fileName:        name,
+		consumerFactory: consumerFactory}
 
 	for _, id := range ids {
 		node.addChild(newChunkDataNode(node, id, provider.Provide(id)))
@@ -36,5 +39,13 @@ func (node *resourceDataNode) Info() string {
 }
 
 func (node *resourceDataNode) save() string {
-	return ""
+	consumer := node.consumerFactory()
+	defer consumer.Finish()
+
+	for _, child := range node.Children() {
+		chunkNode := child.(*chunkDataNode)
+		chunkNode.saveTo(consumer)
+	}
+
+	return node.fileName + "\n"
 }

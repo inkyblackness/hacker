@@ -5,6 +5,7 @@ import (
 	"path/filepath"
 	"strings"
 
+	"github.com/inkyblackness/res/chunk"
 	chunkDos "github.com/inkyblackness/res/chunk/dos"
 	"github.com/inkyblackness/res/objprop"
 	objDos "github.com/inkyblackness/res/objprop/dos"
@@ -57,7 +58,11 @@ func (provider *fileBasedFileDataNodeProvider) Provide(parentNode DataNode, file
 			chunkProvider, chunkErr := chunkDos.NewChunkProvider(reader)
 
 			if chunkErr == nil {
-				node = NewResourceDataNode(parentNode, fileName, chunkProvider)
+				consumerFactory := func() chunk.Consumer {
+					outFile, _ := provider.access.createFile(filePathName)
+					return chunkDos.NewChunkConsumer(outFile)
+				}
+				node = NewResourceDataNode(parentNode, fileName, chunkProvider, consumerFactory)
 			}
 		}
 	}
