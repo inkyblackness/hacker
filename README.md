@@ -46,6 +46,13 @@ The second directory is optional, in case a HD-only release is to be loaded.
 
 For quicker access, it is recommended to have the load command in a text file, which is then passed with the ```--run``` parameter at startup.
 
+Example:
+```
+> load "/tmp/dosgames/SystemShock/dosbox/SSHOCK/DATA" "/tmp/dosgames/SystemShock/original_cd/cdrom/data"
+Loaded release [DOS CD Release]
+> _
+```
+
 #### Change Directory
 ```
 cd path
@@ -54,14 +61,15 @@ When a release was successfully loaded, the data is available in a directory-lik
 
 For example,
 ```
-cd /hd/mfdart.res/0026
-cd ../002D
+> cd /hd/mfdart.res/0026
+/hd/mfdart.res/0026> cd ../002D
+/hd/mfdart.res/002D> _
 ```
 changes to the HD file ```mfdart.res```, chunk 0x0026 ; The second then switches to 0x002D, also in mfdart.res
 
 For nodes containing serial items (such as chunks with blocks or texture properties), the subnodes are simply 0 up to the number of children (-1). Object property nodes are identified by ```class-subclass-type```, e.g.: ```1-3-0```, below which the nodes ```common```, ```generic``` and ```specific``` are available.
 
-File nodes will only be loaded into memory when they are entered. So, although a ```load``` command may succeed, loading specific files may not.
+File nodes will only be loaded into memory when they are entered. So, although a ```load``` command may succeed, loading specific files may not. Once a file has been loaded into memory, changes outside of Hacker are not reflected (e.g. overwriting a save-game file). Restart the application to load the newest file(s) - this is where the ```--run``` parameter is useful.
 
 #### Node Info
 ```
@@ -69,12 +77,28 @@ info
 ```
 This command prints out some information on the current node. Parent nodes may also give information on which children are available.
 
+Example:
+```
+/cd/cutspal.res> info
+ResourceFile: cutspal.res
+IDs: 0003 0004 0005 0006 0007 0008 0009 000A 000B 000C 000D 000E 000F 0010 0011 0012 0013 0014
+/cd/cutspal.res> _
+```
 
 #### Dump
 ```
 dump
 ```
 For data nodes, this command returns the raw data content as a hexdump.
+
+Example:
+```
+/cd/textprop.dat/34> dump
+0000  00 00 00 00 22 22 0A 00  00 00 00                 ...."".. ...
+/cd/textprop.dat/34> _
+```
+
+The first column is the offset (in hexadecimal), then up to 16 bytes as 2-digit hex values and the ASCII representation of these bytes on the right (if possible, ```.``` otherwise)
 
 #### Diff
 ```
