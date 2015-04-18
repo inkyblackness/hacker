@@ -179,7 +179,22 @@ func (hacker *Hacker) Diff(source string) (result string) {
 }
 
 func (hacker *Hacker) diffData(sourceData []byte, targetData []byte) string {
-	diffResult := diff.OfData(sourceData, targetData)
+	var diffResult []diff.DiffRecord
+
+	if len(sourceData) == len(targetData) {
+		diffResult = make([]diff.DiffRecord, 0, len(targetData))
+		for index, targetByte := range targetData {
+			sourceByte := sourceData[index]
+			if sourceByte == targetByte {
+				diffResult = append(diffResult, diff.DiffRecord{Payload: targetByte, Delta: diff.Common})
+			} else {
+				diffResult = append(diffResult, diff.DiffRecord{Payload: targetByte, Delta: diff.RightOnly},
+					diff.DiffRecord{Payload: sourceByte, Delta: diff.LeftOnly})
+			}
+		}
+	} else {
+		diffResult = diff.OfData(sourceData, targetData)
+	}
 
 	filterMap := func(filteredType diff.DeltaType, styleFunc styling.StyleFunc) []styledData {
 		styled := make([]styledData, 0, len(diffResult))
