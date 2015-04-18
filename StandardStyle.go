@@ -20,7 +20,7 @@ func newStandardStyle() *standardStyle {
 		err:     color.New(color.FgRed, color.Bold).SprintFunc(),
 		status:  color.New(color.FgCyan).SprintFunc(),
 		added:   color.New(color.FgMagenta, color.Bold).SprintFunc(),
-		removed: color.New(color.FgYellow, color.Bold).SprintFunc()}
+		removed: color.New(color.FgCyan, color.Bold).SprintFunc()}
 
 	return style
 }
