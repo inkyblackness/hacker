@@ -61,7 +61,7 @@ func createDump(data []styledData) (result string) {
 		asciiLen += 1
 	}
 	if hexDump != "" {
-		addLine((len(data) / 16) * 16)
+		addLine(((len(data) - 1) / 16) * 16)
 	}
 	return
 }
