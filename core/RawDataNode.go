@@ -26,3 +26,7 @@ func (node *rawDataNode) Resolve(path string) DataNode {
 func (node *rawDataNode) Data() []byte {
 	return node.data
 }
+
+func (node *rawDataNode) UnknownData() []byte {
+	return node.Data()
+}

@@ -163,8 +163,8 @@ func (hacker *Hacker) Diff(source string) (result string) {
 	targetNode := hacker.curNode
 
 	if (targetNode != nil) && (sourceNode != nil) {
-		sourceData := sourceNode.Data()
-		targetData := targetNode.Data()
+		sourceData := sourceNode.UnknownData()
+		targetData := targetNode.UnknownData()
 
 		if len(sourceData) > 0 || len(targetData) > 0 {
 			result = hacker.diffData(sourceData, targetData)
@@ -245,7 +245,7 @@ func (hacker *Hacker) diffNodes(sourcePath string, sourceNode DataNode, targetPa
 		}
 	}
 
-	if bytes.Compare(sourceNode.Data(), targetNode.Data()) != 0 {
+	if bytes.Compare(sourceNode.UnknownData(), targetNode.UnknownData()) != 0 {
 		result = result + "M " + targetPath + "\n"
 	}
 

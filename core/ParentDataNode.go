@@ -61,3 +61,7 @@ func (node *parentDataNode) Resolve(path string) (resolved DataNode) {
 func (node *parentDataNode) Data() []byte {
 	return nil
 }
+
+func (node *parentDataNode) UnknownData() []byte {
+	return nil
+}

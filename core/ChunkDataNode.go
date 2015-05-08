@@ -5,6 +5,7 @@ import (
 
 	"github.com/inkyblackness/res"
 	"github.com/inkyblackness/res/chunk"
+	"github.com/inkyblackness/res/data"
 )
 
 type chunkDataNode struct {
@@ -14,14 +15,31 @@ type chunkDataNode struct {
 	holder  chunk.BlockHolder
 }
 
+func isLevelChunk(chunkID res.ResourceID, relativeID int) bool {
+	result := false
+
+	if (chunkID >= res.ResourceID(4000)) && (int(chunkID)%100) == relativeID {
+		result = true
+	}
+
+	return result
+}
+
 func newChunkDataNode(parentNode DataNode, chunkID res.ResourceID, holder chunk.BlockHolder) *chunkDataNode {
 	node := &chunkDataNode{
 		parentDataNode: makeParentDataNode(parentNode, fmt.Sprintf("%04X", chunkID), int(holder.BlockCount())),
 		chunkID:        chunkID,
 		holder:         holder}
+	var dataStruct interface{} = nil
+
+	if chunkID == res.ResourceID(0x0FA1) {
+		dataStruct = data.DefaultGameState()
+	} else if isLevelChunk(chunkID, 5) {
+		dataStruct = data.DefaultTileMap(64, 64)
+	}
 
 	for i := uint16(0); i < holder.BlockCount(); i++ {
-		node.addChild(newBlockDataNode(node, i, holder.BlockData(i)))
+		node.addChild(newBlockDataNode(node, i, holder.BlockData(i), dataStruct))
 	}
 
 	return node

@@ -15,4 +15,7 @@ type DataNode interface {
 	Resolve(string) DataNode
 	// Data returns the data of the given node or nil if no data available.
 	Data() []byte
+	// UnknownData returns a byte array similar to Data(), but with known data
+	// cleared to be 0x00.
+	UnknownData() []byte
 }
