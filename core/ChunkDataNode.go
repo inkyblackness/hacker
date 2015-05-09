@@ -42,7 +42,9 @@ func newChunkDataNode(parentNode DataNode, chunkID res.ResourceID, holder chunk.
 }
 
 func getDataStructForBlock(chunkID res.ResourceID, blockData []byte) (dataStruct interface{}) {
-	if chunkID == res.ResourceID(0x0FA1) {
+	if chunkID == res.ResourceID(0x0FA0) {
+		dataStruct = data.NewString("")
+	} else if chunkID == res.ResourceID(0x0FA1) {
 		dataStruct = data.DefaultGameState()
 	} else if isLevelChunk(chunkID, 4) {
 		dataStruct = data.DefaultLevelInformation()
