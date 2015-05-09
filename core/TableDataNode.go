@@ -15,6 +15,7 @@ type Table interface {
 type tableDataNode struct {
 	parentDataNode
 
+	data  []byte
 	table Table
 }
 
@@ -22,6 +23,7 @@ func newTableDataNode(parentNode DataNode, id string, data []byte, table Table) 
 	entryCount := table.Size()
 	node := &tableDataNode{
 		parentDataNode: makeParentDataNode(parentNode, id, entryCount),
+		data:           data,
 		table:          table}
 	decoder := serial.NewPositioningDecoder(bytes.NewReader(data))
 	startOffset := 0
@@ -43,17 +45,7 @@ func (node *tableDataNode) Info() string {
 }
 
 func (node *tableDataNode) Data() []byte {
-	entryCount := node.table.Size()
-	buffer := serial.NewByteStore()
-	encoder := serial.NewPositioningEncoder(buffer)
-
-	for i := 0; i < entryCount; i++ {
-		entry := node.table.Entry(i)
-
-		serial.MapData(entry, encoder)
-	}
-
-	return buffer.Data()
+	return node.data
 }
 
 func (node *tableDataNode) UnknownData() []byte {
