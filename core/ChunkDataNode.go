@@ -34,6 +34,8 @@ func newChunkDataNode(parentNode DataNode, chunkID res.ResourceID, holder chunk.
 
 	if chunkID == res.ResourceID(0x0FA1) {
 		dataStruct = data.DefaultGameState()
+	} else if isLevelChunk(chunkID, 4) {
+		dataStruct = data.DefaultLevelInformation()
 	} else if isLevelChunk(chunkID, 5) {
 		dataStruct = data.DefaultTileMap(64, 64)
 	}
