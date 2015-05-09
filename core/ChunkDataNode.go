@@ -52,10 +52,13 @@ func getDataStructForBlock(chunkID res.ResourceID, blockData []byte) (dataStruct
 		dataStruct = data.DefaultTileMap(64, 64)
 	} else if isLevelChunk(chunkID, 8) {
 		entryCount := len(blockData) / data.LevelObjectEntrySize
-		dataStruct = data.DefaultLevelObjectTable(entryCount)
+		dataStruct = data.NewTable(entryCount, func() interface{} { return data.DefaultLevelObjectEntry() })
 	} else if isLevelChunk(chunkID, 9) {
 		entryCount := len(blockData) / data.LevelObjectCrossReferenceSize
-		dataStruct = data.DefaultLevelObjectCrossReferenceTable(entryCount)
+		dataStruct = data.NewTable(entryCount, func() interface{} { return data.DefaultLevelObjectCrossReference() })
+	} else if isLevelChunk(chunkID, 10) {
+		entryCount := len(blockData) / data.LevelWeaponEntrySize
+		dataStruct = data.NewTable(entryCount, func() interface{} { return data.NewLevelWeaponEntry() })
 	}
 
 	return
