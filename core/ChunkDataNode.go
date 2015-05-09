@@ -30,21 +30,33 @@ func newChunkDataNode(parentNode DataNode, chunkID res.ResourceID, holder chunk.
 		parentDataNode: makeParentDataNode(parentNode, fmt.Sprintf("%04X", chunkID), int(holder.BlockCount())),
 		chunkID:        chunkID,
 		holder:         holder}
-	var dataStruct interface{} = nil
 
+	for i := uint16(0); i < holder.BlockCount(); i++ {
+		blockData := holder.BlockData(i)
+		dataStruct := getDataStructForBlock(chunkID, blockData)
+
+		node.addChild(newBlockDataNode(node, i, blockData, dataStruct))
+	}
+
+	return node
+}
+
+func getDataStructForBlock(chunkID res.ResourceID, blockData []byte) (dataStruct interface{}) {
 	if chunkID == res.ResourceID(0x0FA1) {
 		dataStruct = data.DefaultGameState()
 	} else if isLevelChunk(chunkID, 4) {
 		dataStruct = data.DefaultLevelInformation()
 	} else if isLevelChunk(chunkID, 5) {
 		dataStruct = data.DefaultTileMap(64, 64)
+	} else if isLevelChunk(chunkID, 8) {
+		entryCount := len(blockData) / data.LevelObjectEntrySize
+		dataStruct = data.DefaultLevelObjectTable(entryCount)
+	} else if isLevelChunk(chunkID, 9) {
+		entryCount := len(blockData) / data.LevelObjectCrossReferenceSize
+		dataStruct = data.DefaultLevelObjectCrossReferenceTable(entryCount)
 	}
 
-	for i := uint16(0); i < holder.BlockCount(); i++ {
-		node.addChild(newBlockDataNode(node, i, holder.BlockData(i), dataStruct))
-	}
-
-	return node
+	return
 }
 
 func (node *chunkDataNode) Info() string {
