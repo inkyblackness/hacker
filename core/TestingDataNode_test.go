@@ -19,3 +19,7 @@ func (node *TestingDataNode) Info() string {
 func (node *TestingDataNode) Data() []byte {
 	return node.data
 }
+
+func (node *TestingDataNode) UnknownData() []byte {
+	return node.data
+}
