@@ -33,15 +33,36 @@ func newChunkDataNode(parentNode DataNode, chunkID res.ResourceID, holder chunk.
 
 	for i := uint16(0); i < holder.BlockCount(); i++ {
 		blockData := holder.BlockData(i)
-		dataStruct := getDataStructForBlock(chunkID, blockData)
+		table := getTableForBlock(chunkID, blockData)
 
-		node.addChild(newBlockDataNode(node, i, blockData, dataStruct))
+		if table != nil {
+			node.addChild(newTableDataNode(node, fmt.Sprintf("%d", i), blockData, table))
+		} else {
+			dataStruct := getDataStructForBlock(chunkID)
+			node.addChild(newBlockDataNode(node, i, blockData, dataStruct))
+		}
+
 	}
 
 	return node
 }
 
-func getDataStructForBlock(chunkID res.ResourceID, blockData []byte) (dataStruct interface{}) {
+func getTableForBlock(chunkID res.ResourceID, blockData []byte) (table Table) {
+	if isLevelChunk(chunkID, 8) {
+		entryCount := len(blockData) / data.LevelObjectEntrySize
+		table = data.NewTable(entryCount, func() interface{} { return data.DefaultLevelObjectEntry() })
+	} else if isLevelChunk(chunkID, 9) {
+		entryCount := len(blockData) / data.LevelObjectCrossReferenceSize
+		table = data.NewTable(entryCount, func() interface{} { return data.DefaultLevelObjectCrossReference() })
+	} else if isLevelChunk(chunkID, 10) {
+		entryCount := len(blockData) / data.LevelWeaponEntrySize
+		table = data.NewTable(entryCount, func() interface{} { return data.NewLevelWeaponEntry() })
+	}
+
+	return
+}
+
+func getDataStructForBlock(chunkID res.ResourceID) (dataStruct interface{}) {
 	if chunkID == res.ResourceID(0x0FA0) {
 		dataStruct = data.NewString("")
 	} else if chunkID == res.ResourceID(0x0FA1) {
@@ -50,15 +71,6 @@ func getDataStructForBlock(chunkID res.ResourceID, blockData []byte) (dataStruct
 		dataStruct = data.DefaultLevelInformation()
 	} else if isLevelChunk(chunkID, 5) {
 		dataStruct = data.DefaultTileMap(64, 64)
-	} else if isLevelChunk(chunkID, 8) {
-		entryCount := len(blockData) / data.LevelObjectEntrySize
-		dataStruct = data.NewTable(entryCount, func() interface{} { return data.DefaultLevelObjectEntry() })
-	} else if isLevelChunk(chunkID, 9) {
-		entryCount := len(blockData) / data.LevelObjectCrossReferenceSize
-		dataStruct = data.NewTable(entryCount, func() interface{} { return data.DefaultLevelObjectCrossReference() })
-	} else if isLevelChunk(chunkID, 10) {
-		entryCount := len(blockData) / data.LevelWeaponEntrySize
-		dataStruct = data.NewTable(entryCount, func() interface{} { return data.NewLevelWeaponEntry() })
 	}
 
 	return
