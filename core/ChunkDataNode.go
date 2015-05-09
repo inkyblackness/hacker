@@ -48,7 +48,10 @@ func newChunkDataNode(parentNode DataNode, chunkID res.ResourceID, holder chunk.
 }
 
 func getTableForBlock(chunkID res.ResourceID, blockData []byte) (table Table) {
-	if isLevelChunk(chunkID, 8) {
+	if isLevelChunk(chunkID, 5) {
+		entryCount := 64 * 64
+		table = data.NewTable(entryCount, func() interface{} { return data.DefaultTileMapEntry() })
+	} else if isLevelChunk(chunkID, 8) {
 		entryCount := len(blockData) / data.LevelObjectEntrySize
 		table = data.NewTable(entryCount, func() interface{} { return data.DefaultLevelObjectEntry() })
 	} else if isLevelChunk(chunkID, 9) {
@@ -69,8 +72,6 @@ func getDataStructForBlock(chunkID res.ResourceID) (dataStruct interface{}) {
 		dataStruct = data.DefaultGameState()
 	} else if isLevelChunk(chunkID, 4) {
 		dataStruct = data.DefaultLevelInformation()
-	} else if isLevelChunk(chunkID, 5) {
-		dataStruct = data.DefaultTileMap(64, 64)
 	}
 
 	return
