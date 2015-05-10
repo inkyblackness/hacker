@@ -16,4 +16,6 @@ type Target interface {
 	Diff(source string) string
 	// Put sets bytes at the given offset
 	Put(offset uint32, data []byte) string
+	// Query requests information from the current location/savegame
+	Query(info string) string
 }
