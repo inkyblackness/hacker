@@ -288,6 +288,8 @@ func (hacker *Hacker) Query(info string) (result string) {
 		source := NewNodeDataSource(hacker.curNode, hacker)
 		if info == "local" {
 			result = query.Local(source)
+		} else if info == "static-archive" {
+			result = query.StaticArchive(source)
 		} else {
 			result = hacker.style.Error()("Unknown query")
 		}
