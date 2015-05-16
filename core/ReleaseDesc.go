@@ -87,6 +87,39 @@ var dosCdDemo = ReleaseDesc{
 			newFileDesc("splash.res"),
 			newFileDesc("textprop.dat")}}}
 
+var dosHdRelease = ReleaseDesc{
+	name: "DOS HD Release",
+	dataFiles: map[DataLocation][]FileDesc{
+		HD: []FileDesc{
+			newFileDesc("archive.dat"),
+			newFileDesc("citmat.res"),
+			newFileDesc("cutspal.res"),
+			newFileDesc("cybstrng.res"),
+			newFileDesc("death.res"),
+			newFileDesc("digifx.res"),
+			newFileDesc("frnstrng.res"),
+			newFileDesc("gamepal.res"),
+			newFileDesc("gamescr.res"),
+			newFileDesc("gerstrng.res"),
+			newFileDesc("handart.res"),
+			newFileDesc("intro.res"),
+			newFileDesc("mfdart.res"),
+			newFileDesc("mfdfrn.res"),
+			newFileDesc("obj3d.res"),
+			newFileDesc("mfdger.res"),
+			newFileDesc("objart.res"),
+			newFileDesc("objart2.res"),
+			newFileDesc("objart3.res"),
+			newFileDesc("objprop.dat"),
+			newFileDesc("sideart.res"),
+			newFileDesc("splash.res"),
+			newFileDesc("splshpal.res"),
+			newFileDesc("start1.res"),
+			newFileDesc("textprop.dat"),
+			newFileDesc("texture.res"),
+			newFileDesc("vidmail.res"),
+			newFileDesc("win1.res")}}}
+
 var dosCdRelease = ReleaseDesc{
 	name: "DOS CD Release",
 	dataFiles: map[DataLocation][]FileDesc{
@@ -140,7 +173,7 @@ var dosCdRelease = ReleaseDesc{
 			newFileDesc("textprop.dat")}}}
 
 // Releases contains all the release descriptions known to Hacker.
-var Releases = []*ReleaseDesc{&dosHdDemo, &dosCdDemo, &dosCdRelease}
+var Releases = []*ReleaseDesc{&dosHdDemo, &dosCdDemo, &dosHdRelease, &dosCdRelease}
 
 // DataFiles maps over the provided release description and returns the names
 // of the data files per file location
