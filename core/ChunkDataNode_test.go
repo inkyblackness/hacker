@@ -21,7 +21,7 @@ func (suite *ChunkDataNodeSuite) TestInfoReturnsListOfAvailableBlockCountAndCont
 
 	result := suite.chunkDataNode.Info()
 
-	c.Check(result, check.Equals, "Available blocks: 2\nContent type: 0x00")
+	c.Check(result, check.Equals, "Content type: 0x00\nAvailable blocks: 2\nChunk TypeID: 0x00 (Basic)\n")
 }
 
 func (suite *ChunkDataNodeSuite) TestResolveReturnsDataNodeForKnownID(c *check.C) {

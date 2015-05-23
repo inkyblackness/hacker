@@ -81,13 +81,17 @@ func getDataStructForBlock(chunkID res.ResourceID) (dataStruct interface{}) {
 		dataStruct = data.DefaultGameState()
 	} else if isLevelChunk(chunkID, 4) {
 		dataStruct = data.DefaultLevelInformation()
+	} else if isLevelChunk(chunkID, 45) {
+		dataStruct = data.NewLevelVariables()
 	}
 
 	return
 }
 
-func (node *chunkDataNode) Info() string {
-	info := fmt.Sprintf("Available blocks: %d\nContent type: 0x%02X", node.holder.BlockCount(), node.holder.ContentType())
+func (node *chunkDataNode) Info() (info string) {
+	info += fmt.Sprintf("Content type: 0x%02X\n", node.holder.ContentType())
+	info += fmt.Sprintf("Available blocks: %d\n", node.holder.BlockCount())
+	info += fmt.Sprintf("Chunk TypeID: 0x%02X (%v)\n", int(node.holder.ChunkType()), node.holder.ChunkType())
 
 	return info
 }
