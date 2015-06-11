@@ -6,6 +6,8 @@ import (
 	"github.com/inkyblackness/res"
 	"github.com/inkyblackness/res/chunk"
 	"github.com/inkyblackness/res/data"
+	"github.com/inkyblackness/res/image"
+	moviFormat "github.com/inkyblackness/res/movi/format"
 )
 
 type chunkDataNode struct {
@@ -38,7 +40,7 @@ func newChunkDataNode(parentNode DataNode, chunkID res.ResourceID, holder chunk.
 		if table != nil {
 			node.addChild(newTableDataNode(node, fmt.Sprintf("%d", i), blockData, table))
 		} else {
-			dataStruct := getDataStructForBlock(chunkID)
+			dataStruct := getDataStructForBlock(holder.ContentType(), chunkID, blockData)
 			node.addChild(newBlockDataNode(node, i, blockData, dataStruct))
 		}
 
@@ -74,7 +76,7 @@ func getTableForBlock(chunkID res.ResourceID, blockData []byte) (table Table) {
 	return
 }
 
-func getDataStructForBlock(chunkID res.ResourceID) (dataStruct interface{}) {
+func getDataStructForBlock(dataType res.DataTypeID, chunkID res.ResourceID, blockData []byte) (dataStruct interface{}) {
 	if chunkID == res.ResourceID(0x0FA0) {
 		dataStruct = data.NewString("")
 	} else if chunkID == res.ResourceID(0x0FA1) {
@@ -83,6 +85,12 @@ func getDataStructForBlock(chunkID res.ResourceID) (dataStruct interface{}) {
 		dataStruct = data.DefaultLevelInformation()
 	} else if isLevelChunk(chunkID, 45) {
 		dataStruct = data.NewLevelVariables()
+	} else if dataType == res.Media {
+		dataStruct = &moviFormat.Header{}
+	} else if dataType == res.VideoClip {
+		dataStruct = data.DefaultVideoMailSequence((len(blockData) - data.VideoMailSequenceBaseSize) / data.VideoMailSequenceEntrySize)
+	} else if dataType == res.Bitmap {
+		dataStruct = &image.BitmapHeader{}
 	}
 
 	return
