@@ -62,6 +62,9 @@ func getTableForBlock(chunkID res.ResourceID, blockData []byte) (table Table) {
 	} else if isLevelChunk(chunkID, 10) {
 		entryCount := len(blockData) / data.LevelWeaponEntrySize
 		table = data.NewTable(entryCount, func() interface{} { return data.NewLevelWeaponEntry() })
+	} else if isLevelChunk(chunkID, 16) {
+		entryCount := len(blockData) / data.LevelSoftwareEntrySize
+		table = data.NewTable(entryCount, func() interface{} { return data.NewLevelSoftwareEntry() })
 	} else if isLevelChunk(chunkID, 17) {
 		entryCount := len(blockData) / data.LevelSceneryEntrySize
 		table = data.NewTable(entryCount, func() interface{} { return data.NewLevelSceneryEntry() })
