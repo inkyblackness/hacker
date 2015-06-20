@@ -31,10 +31,8 @@ func (suite *FileBasedFileDataNodeProviderSuite) SetUpTest(c *check.C) {
 }
 
 func (suite *FileBasedFileDataNodeProviderSuite) TestProviderCanOpenTextureProperties(c *check.C) {
-	suite.input = make([]byte, textprop.TexturePropertiesLength)
-	for index := range suite.input {
-		suite.input[index] = byte(index)
-	}
+	suite.input = []byte{0x09, 0x00, 0x00, 0x00}
+	suite.input = append(suite.input, make([]byte, textprop.TexturePropertiesLength)...)
 
 	node := suite.provider.Provide(suite.parentNode, ".", "textprop.dat")
 
@@ -42,10 +40,8 @@ func (suite *FileBasedFileDataNodeProviderSuite) TestProviderCanOpenTexturePrope
 }
 
 func (suite *FileBasedFileDataNodeProviderSuite) TestProviderForwardsWriterForSaving(c *check.C) {
-	suite.input = make([]byte, textprop.TexturePropertiesLength)
-	for index := range suite.input {
-		suite.input[index] = byte(index)
-	}
+	suite.input = []byte{0x09, 0x00, 0x00, 0x00}
+	suite.input = append(suite.input, make([]byte, textprop.TexturePropertiesLength)...)
 
 	node := suite.provider.Provide(suite.parentNode, ".", "textprop.dat")
 	saver := node.(saveable)

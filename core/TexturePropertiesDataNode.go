@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/inkyblackness/res"
 	"github.com/inkyblackness/res/textprop"
 )
 
@@ -18,12 +17,13 @@ type texturePropertiesDataNode struct {
 func NewTexturePropertiesDataNode(parentNode DataNode, name string,
 	provider textprop.Provider, consumerFactory textpropConsumerFactory) DataNode {
 	node := &texturePropertiesDataNode{
-		parentDataNode:  makeParentDataNode(parentNode, strings.ToLower(name), int(provider.TextureCount())),
+		parentDataNode:  makeParentDataNode(parentNode, strings.ToLower(name), int(provider.EntryCount())),
 		consumerFactory: consumerFactory}
 
-	for i := uint32(0); i < provider.TextureCount(); i++ {
-		id := res.TextureID(i)
-		node.addChild(newTexturePropertyDataNode(node, id, provider.Provide(id)))
+	for i := uint32(0); i < provider.EntryCount(); i++ {
+		blockData := provider.Provide(i)
+		dataStruct := &textprop.Entry{}
+		node.addChild(newBlockDataNode(node, uint16(i), blockData, dataStruct))
 	}
 
 	return node
@@ -39,8 +39,8 @@ func (node *texturePropertiesDataNode) save() string {
 	consumer := node.consumerFactory()
 	defer consumer.Finish()
 
-	for _, child := range node.Children() {
-		consumer.Consume(child.Data())
+	for index, child := range node.Children() {
+		consumer.Consume(uint32(index), child.Data())
 	}
 
 	return node.ID() + "\n"
