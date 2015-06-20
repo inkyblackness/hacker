@@ -16,7 +16,7 @@ type ChunkDataNodeSuite struct {
 var _ = check.Suite(&ChunkDataNodeSuite{})
 
 func (suite *ChunkDataNodeSuite) TestInfoReturnsListOfAvailableBlockCountAndContentType(c *check.C) {
-	holder := chunk.NewBlockHolder(chunk.BasicChunkType, res.Data, [][]byte{[]byte{}, []byte{}})
+	holder := chunk.NewBlockHolder(chunk.BasicChunkType, res.Palette, [][]byte{[]byte{}, []byte{}})
 	suite.chunkDataNode = newChunkDataNode(suite.parentNode, res.ResourceID(0x0200), holder)
 
 	result := suite.chunkDataNode.Info()
@@ -25,7 +25,7 @@ func (suite *ChunkDataNodeSuite) TestInfoReturnsListOfAvailableBlockCountAndCont
 }
 
 func (suite *ChunkDataNodeSuite) TestResolveReturnsDataNodeForKnownID(c *check.C) {
-	holder := chunk.NewBlockHolder(chunk.BasicChunkType, res.Data, [][]byte{[]byte{}, []byte{}})
+	holder := chunk.NewBlockHolder(chunk.BasicChunkType, res.Palette, [][]byte{[]byte{}, []byte{}})
 	suite.chunkDataNode = newChunkDataNode(suite.parentNode, res.ResourceID(0x0200), holder)
 
 	result := suite.chunkDataNode.Resolve("1")
