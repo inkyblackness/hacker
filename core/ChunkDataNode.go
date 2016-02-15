@@ -91,7 +91,7 @@ func getDataStructForBlock(dataType res.DataTypeID, chunkID res.ResourceID, bloc
 	} else if dataType == res.Media {
 		dataStruct = &moviFormat.Header{}
 	} else if dataType == res.VideoClip {
-		dataStruct = data.DefaultVideoMailSequence((len(blockData) - data.VideoMailSequenceBaseSize) / data.VideoMailSequenceEntrySize)
+		dataStruct = data.DefaultVideoClipSequence((len(blockData) - data.VideoClipSequenceBaseSize) / data.VideoClipSequenceEntrySize)
 	} else if dataType == res.Bitmap {
 		dataStruct = &image.BitmapHeader{}
 	}
