@@ -33,12 +33,14 @@ func NewReadLineSource(prompter prompterFunc) *ReadLineSource {
 		readline.PcItem("load"),
 		readline.PcItem("put"),
 		readline.PcItem("save"),
+		readline.PcItem("quit"),
 	)
 
 	rl, err := readline.NewEx(&readline.Config{
 		Prompt:                 prompter(),
-		HistoryFile:            "",
-		DisableAutoSaveHistory: true,
+		HistoryFile:            ".hacker-history",
+		DisableAutoSaveHistory: false,
+		HistoryLimit:           100,
 		AutoComplete:           completer,
 		InterruptPrompt:        "^C",
 		EOFPrompt:              "quit",
