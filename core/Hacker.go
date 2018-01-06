@@ -6,7 +6,6 @@ import (
 	"strings"
 
 	"github.com/inkyblackness/hacker/diff"
-	"github.com/inkyblackness/hacker/query"
 	"github.com/inkyblackness/hacker/styling"
 )
 
@@ -279,22 +278,6 @@ func (hacker *Hacker) Put(offset uint32, data []byte) (result string) {
 		}
 	} else {
 		result = hacker.style.Error()(`No data loaded`)
-	}
-	return
-}
-
-func (hacker *Hacker) Query(info string) (result string) {
-	if hacker.resolve("0FA0/0") != nil {
-		source := NewNodeDataSource(hacker.curNode, hacker)
-		if info == "local" {
-			result = query.Local(source)
-		} else if info == "static-archive" {
-			result = query.StaticArchive(source)
-		} else {
-			result = hacker.style.Error()("Unknown query")
-		}
-	} else {
-		result = hacker.style.Error()("Not at archive node")
 	}
 	return
 }
