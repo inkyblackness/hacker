@@ -51,11 +51,11 @@ func main() {
 		cmd.NewCombinedSource(fileSources...),
 		readLineSource))
 
-	fmt.Println(style.Prompt()(Title))
-	fmt.Println(style.Prompt()(`Type "quit" to exit`))
-	fmt.Println(style.Prompt()(`Remember to keep backups! ...and to salt the fries!`))
+	style.Println(style.Prompt()(Title))
+	style.Println(style.Prompt()(`Type "quit" to exit`))
+	style.Println(style.Prompt()(`Remember to keep backups! ...and to salt the fries!`))
 
-	runCommands(source, eval)
+	runCommands(style, source, eval)
 }
 
 func usage() string {
@@ -72,7 +72,7 @@ Options:
   --run <file>  Run the specified file. Can be repeated to run several in sequence.`
 }
 
-func runCommands(source cmd.Source, eval *cmd.Evaluater) {
+func runCommands(style *standardStyle, source cmd.Source, eval *cmd.Evaluater) {
 	quit := false
 
 	for !quit {
@@ -82,7 +82,7 @@ func runCommands(source cmd.Source, eval *cmd.Evaluater) {
 			quit = true
 		} else if input != "" {
 			result := eval.Evaluate(input)
-			fmt.Println(result)
+			style.Println(result)
 		}
 	}
 }
