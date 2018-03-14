@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"io/ioutil"
 
+	"github.com/inkyblackness/res"
 	"github.com/inkyblackness/res/chunk"
 	"github.com/inkyblackness/res/data"
 	"github.com/inkyblackness/res/image"
@@ -59,6 +60,7 @@ func newChunkDataNode(parentNode DataNode, chunkID chunk.Identifier, holder *chu
 }
 
 func getTableForBlock(chunkID chunk.Identifier, blockData []byte) (table Table) {
+	rawChunkID := chunkID.Value()
 	if isLevelChunk(chunkID, 5) {
 		entryCount := 64 * 64
 		table = data.NewTable(entryCount, func() interface{} { return data.DefaultTileMapEntry() })
@@ -68,51 +70,12 @@ func getTableForBlock(chunkID chunk.Identifier, blockData []byte) (table Table) 
 	} else if isLevelChunk(chunkID, 9) {
 		entryCount := len(blockData) / data.LevelObjectCrossReferenceSize
 		table = data.NewTable(entryCount, func() interface{} { return data.DefaultLevelObjectCrossReference() })
-	} else if isLevelChunk(chunkID, 10) {
-		entryCount := len(blockData) / data.LevelWeaponEntrySize
-		table = data.NewTable(entryCount, func() interface{} { return data.NewLevelWeaponEntry() })
-	} else if isLevelChunk(chunkID, 11) {
-		entryCount := len(blockData) / data.LevelAmmoEntrySize
-		table = data.NewTable(entryCount, func() interface{} { return data.NewLevelAmmoEntry() })
-	} else if isLevelChunk(chunkID, 12) {
-		entryCount := len(blockData) / data.LevelProjectileEntrySize
-		table = data.NewTable(entryCount, func() interface{} { return data.NewLevelProjectileEntry() })
-	} else if isLevelChunk(chunkID, 13) {
-		entryCount := len(blockData) / data.LevelExplosiveEntrySize
-		table = data.NewTable(entryCount, func() interface{} { return data.NewLevelExplosiveEntry() })
-	} else if isLevelChunk(chunkID, 14) {
-		entryCount := len(blockData) / data.LevelPatchEntrySize
-		table = data.NewTable(entryCount, func() interface{} { return data.NewLevelPatchEntry() })
-	} else if isLevelChunk(chunkID, 15) {
-		entryCount := len(blockData) / data.LevelHardwareEntrySize
-		table = data.NewTable(entryCount, func() interface{} { return data.NewLevelHardwareEntry() })
-	} else if isLevelChunk(chunkID, 16) {
-		entryCount := len(blockData) / data.LevelSoftwareEntrySize
-		table = data.NewTable(entryCount, func() interface{} { return data.NewLevelSoftwareEntry() })
-	} else if isLevelChunk(chunkID, 17) {
-		entryCount := len(blockData) / data.LevelSceneryEntrySize
-		table = data.NewTable(entryCount, func() interface{} { return data.NewLevelSceneryEntry() })
-	} else if isLevelChunk(chunkID, 18) {
-		entryCount := len(blockData) / data.LevelItemEntrySize
-		table = data.NewTable(entryCount, func() interface{} { return data.NewLevelItemEntry() })
-	} else if isLevelChunk(chunkID, 19) {
-		entryCount := len(blockData) / data.LevelPanelEntrySize
-		table = data.NewTable(entryCount, func() interface{} { return data.NewLevelPanelEntry() })
-	} else if isLevelChunk(chunkID, 20) {
-		entryCount := len(blockData) / data.LevelBarrierEntrySize
-		table = data.NewTable(entryCount, func() interface{} { return data.NewLevelBarrierEntry() })
-	} else if isLevelChunk(chunkID, 21) {
-		entryCount := len(blockData) / data.LevelAnimationEntrySize
-		table = data.NewTable(entryCount, func() interface{} { return data.NewLevelAnimationEntry() })
-	} else if isLevelChunk(chunkID, 22) {
-		entryCount := len(blockData) / data.LevelMarkerEntrySize
-		table = data.NewTable(entryCount, func() interface{} { return data.NewLevelMarkerEntry() })
-	} else if isLevelChunk(chunkID, 23) {
-		entryCount := len(blockData) / data.LevelContainerEntrySize
-		table = data.NewTable(entryCount, func() interface{} { return data.NewLevelContainerEntry() })
-	} else if isLevelChunk(chunkID, 24) {
-		entryCount := len(blockData) / data.LevelCritterEntrySize
-		table = data.NewTable(entryCount, func() interface{} { return data.NewLevelCritterEntry() })
+	} else if (rawChunkID >= 4000) && ((rawChunkID % 100) >= 10) && ((rawChunkID % 100) <= 24) {
+		meta := data.LevelObjectClassMetaEntry(res.ObjectClass((rawChunkID % 100) - 10))
+		entryCount := len(blockData) / meta.EntrySize
+		table = data.NewTable(entryCount, func() interface{} {
+			return data.NewLevelObjectClassEntry(meta.EntrySize - data.LevelObjectPrefixSize)
+		})
 	}
 
 	return
